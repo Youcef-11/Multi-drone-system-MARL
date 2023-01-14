@@ -27,8 +27,7 @@
   />
 
   <!--  Gazebo parameters  -->
-  <arg name="gazebo_world" default="$(find rotors_gazebo)/worlds/basic1.world"/>
-  <arg name="gazebo_world" default="$(find gazebo_ros)/launch/empty_world.launch"/>
+  <arg name="gazebo_world" default="$(find rotors_gazebo)/worlds/basic.world"/>
   <arg name="gui" default="true"/>
   <arg name="paused" default="false"/>
   <arg name="start_gazebo" default="true"/>
