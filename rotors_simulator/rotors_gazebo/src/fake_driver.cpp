@@ -95,10 +95,10 @@ int main(int argc, char** argv) {
   odom_sub = nh.subscribe("odom", 10, &odom_callback);
 
 
-  takeoff_sub = nh.subscribe("/bebop/takeoff", 10, &TakeoffCallback);
-  land_sub = nh.subscribe("/bebop/land", 10, &LandCallback);
-  stop_sub = nh.subscribe("/bebop/reset", 10, &StopCallback);
-  move_sub = nh.subscribe("/bebop/cmd_vel", 10, &MoveCallback);
+  takeoff_sub = nh.subscribe("takeoff", 10, &TakeoffCallback);
+  land_sub = nh.subscribe("land", 10, &LandCallback);
+  stop_sub = nh.subscribe("reset", 10, &StopCallback);
+  move_sub = nh.subscribe("cmd_vel", 10, &MoveCallback);
 
 
 

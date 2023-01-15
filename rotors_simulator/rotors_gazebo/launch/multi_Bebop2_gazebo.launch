@@ -67,9 +67,12 @@
 
   <group ns="R_bebop2">
     <node name="fake_driver" pkg="rotors_gazebo" type="fake_driver" output="screen" >
-    
       <!--<remap from="~odom" to="odometry_sensor1/odometry" />-->
       <rosparam command="load" file="$(find rotors_gazebo)/resource/logitech_f710.yaml" />
+      <remap from="~cmd_vel" to="cmd_vel"/>
+      <remap from="~takeoff" to="takeoff"/>
+      <remap from="~land" to="land"/>
+      <remap from="~reset" to="reset"/>
       <remap from="~joy"  to="joy" />
       <remap from="~odom" to="ground_truth/odometry" />
       <remap from="~command/trajectory" to="command/trajectory" />
@@ -84,22 +87,21 @@
       <rosparam command="load" file="$(find rotors_gazebo)/resource/$(arg mav_name).yaml" />
       <remap from="odometry" to="ground_truth/odometry" />
     </node>
-    <param name="tf_prefix" type="string" value="R_bebop2" />
+    <!-- <param name="tf_prefix" type="string" value="R_bebop2" /> -->
   </group>
 
 
   <group ns="L_bebop2">
     <node name="fake_driver" pkg="rotors_gazebo" type="fake_driver" output="screen" >
-    
       <!--<remap from="~odom" to="odometry_sensor1/odometry" />-->
       <rosparam command="load" file="$(find rotors_gazebo)/resource/logitech_f710.yaml" />
+      <remap from="~cmd_vel" to="cmd_vel"/>
+      <remap from="~takeoff" to="takeoff"/>
+      <remap from="~land" to="land"/>
+      <remap from="~reset" to="reset"/>
       <remap from="~joy"  to="joy" />
       <remap from="~odom" to="ground_truth/odometry" />
       <remap from="~command/trajectory" to="command/trajectory" />
-      <remap from="~bebop/takeoff"  to="takeoff" />
-      <remap from="~bebop/land" to="land" />
-      <remap from="~bebop/reset" to="reset" />
-      <remap from="~bebop/cmd_vel" to="cmd_vel" />
       <rosparam> 
         max_vel: 3.0
         max_yawrate: 0.66
@@ -112,7 +114,7 @@
       <remap from="odometry" to="ground_truth/odometry" />
     </node>
 
-    <param name="tf_prefix" type="string" value="L_bebop2" />
+    <!-- <param name="tf_prefix" type="string" value="L_bebop2" /> -->
   </group>
 
 

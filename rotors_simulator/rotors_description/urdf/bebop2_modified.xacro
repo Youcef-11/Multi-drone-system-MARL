@@ -37,9 +37,11 @@
   <!-- Included URDF Files -->
   <xacro:include filename="$(find rotors_description)/urdf/multirotor_base.xacro" />
 
+
+
   <!-- Instantiate multirotor_base_macro once -->
   <xacro:multirotor_base_macro
-    robot_namespace="${namespace}"
+    robot_namespace="R_${namespace}"
     mass="${mass}"
     body_width="${body_width}"
     body_height="${body_height}"
@@ -51,12 +53,12 @@
 
   <!-- Instantiate rotors -->
   <xacro:vertical_rotor
-    robot_namespace="${namespace}"
+    robot_namespace="R_${namespace}"
     suffix="front_right"
     direction="ccw"
     motor_constant="${motor_constant}"
     moment_constant="${moment_constant}"
-    parent="${namespace}/base_link"
+    parent="R_${namespace}/base_link"
     mass_rotor="${mass_rotor}"
     radius_rotor="${radius_rotor}"
     time_constant_up="${time_constant_up}"
@@ -73,12 +75,12 @@
   </xacro:vertical_rotor>
 
   <xacro:vertical_rotor
-    robot_namespace="${namespace}"
+    robot_namespace="R_${namespace}"
     suffix="back_left"
     direction="ccw"
     motor_constant="${motor_constant}"
     moment_constant="${moment_constant}"
-    parent="${namespace}/base_link"
+    parent="R_${namespace}/base_link"
     mass_rotor="${mass_rotor}"
     radius_rotor="${radius_rotor}"
     time_constant_up="${time_constant_up}"
@@ -94,12 +96,12 @@
     <xacro:insert_block name="rotor_inertia" />
   </xacro:vertical_rotor>
 
-  <xacro:vertical_rotor robot_namespace="${namespace}"
+  <xacro:vertical_rotor robot_namespace="R_${namespace}"
     suffix="front_left"
     direction="cw"
     motor_constant="${motor_constant}"
     moment_constant="${moment_constant}"
-    parent="${namespace}/base_link"
+    parent="R_${namespace}/base_link"
     mass_rotor="${mass_rotor}"
     radius_rotor="${radius_rotor}"
     time_constant_up="${time_constant_up}"
@@ -115,12 +117,12 @@
     <xacro:insert_block name="rotor_inertia" />
   </xacro:vertical_rotor>
 
-  <xacro:vertical_rotor robot_namespace="${namespace}"
+  <xacro:vertical_rotor robot_namespace="R_${namespace}"
     suffix="back_right"
     direction="cw"
     motor_constant="${motor_constant}"
     moment_constant="${moment_constant}"
-    parent="${namespace}/base_link"
+    parent="R_${namespace}/base_link"
     mass_rotor="${mass_rotor}"
     radius_rotor="${radius_rotor}"
     time_constant_up="${time_constant_up}"
@@ -138,8 +140,133 @@
  
  <!--Mount a Camera-->
   <xacro:camera_macro
-      namespace="${namespace}"
-      parent_link="${namespace}/base_link"
+      namespace="R_${namespace}"
+      parent_link="R_${namespace}/base_link"
+      camera_suffix="base"
+      frame_rate="30.0"
+      horizontal_fov="1.7"
+      image_width="856"
+      image_height="480"
+      image_format="R8G8B8"
+      min_distance="0.02"
+      max_distance="50"
+      noise_mean="0.0"
+      noise_stddev="0.007"
+      enable_visual="true">
+      <box size="0.001 0.001 0.001" />
+      <origin xyz="0.1 0 0" rpy="0 0 0" />
+  </xacro:camera_macro>
+
+
+
+
+
+<!-- ################################################################################### -->
+
+
+  <!-- Instantiate multirotor_base_macro once -->
+  <xacro:multirotor_base_macro
+    robot_namespace="L_${namespace}"
+    mass="${mass}"
+    body_width="${body_width}"
+    body_height="${body_height}"
+    use_mesh_file="${use_mesh_file}"
+    mesh_file="${mesh_file}"
+    >
+    <xacro:insert_block name="body_inertia" />
+  </xacro:multirotor_base_macro>
+
+  <!-- Instantiate rotors -->
+  <xacro:vertical_rotor
+    robot_namespace="L_${namespace}"
+    suffix="front_right"
+    direction="ccw"
+    motor_constant="${motor_constant}"
+    moment_constant="${moment_constant}"
+    parent="L_${namespace}/base_link"
+    mass_rotor="${mass_rotor}"
+    radius_rotor="${radius_rotor}"
+    time_constant_up="${time_constant_up}"
+    time_constant_down="${time_constant_down}"
+    max_rot_velocity="${max_rot_velocity}"
+    motor_number="0"
+    rotor_drag_coefficient="${rotor_drag_coefficient}"
+    rolling_moment_coefficient="${rolling_moment_coefficient}"
+    color=""
+    use_own_mesh="true"
+    mesh="package://rotors_description/meshes/propeller_fr.dae">
+    <origin xyz="0.08456 -0.11435 -0.00501" rpy="0 0 0" />
+    <xacro:insert_block name="rotor_inertia" />
+  </xacro:vertical_rotor>
+
+  <xacro:vertical_rotor
+    robot_namespace="L_${namespace}"
+    suffix="back_left"
+    direction="ccw"
+    motor_constant="${motor_constant}"
+    moment_constant="${moment_constant}"
+    parent="L_${namespace}/base_link"
+    mass_rotor="${mass_rotor}"
+    radius_rotor="${radius_rotor}"
+    time_constant_up="${time_constant_up}"
+    time_constant_down="${time_constant_down}"
+    max_rot_velocity="${max_rot_velocity}"
+    motor_number="1"
+    rotor_drag_coefficient="${rotor_drag_coefficient}"
+    rolling_moment_coefficient="${rolling_moment_coefficient}"
+    color=""
+    use_own_mesh="true"
+    mesh="package://rotors_description/meshes/propeller_rl.dae">
+    <origin xyz="-0.09035 0.11452 -0.00501" rpy="0 0 0" />
+    <xacro:insert_block name="rotor_inertia" />
+  </xacro:vertical_rotor>
+
+  <xacro:vertical_rotor robot_namespace="L_${namespace}"
+    suffix="front_left"
+    direction="cw"
+    motor_constant="${motor_constant}"
+    moment_constant="${moment_constant}"
+    parent="L_${namespace}/base_link"
+    mass_rotor="${mass_rotor}"
+    radius_rotor="${radius_rotor}"
+    time_constant_up="${time_constant_up}"
+    time_constant_down="${time_constant_down}"
+    max_rot_velocity="${max_rot_velocity}"
+    motor_number="2"
+    rotor_drag_coefficient="${rotor_drag_coefficient}"
+    rolling_moment_coefficient="${rolling_moment_coefficient}"
+    color=""
+    use_own_mesh="true"
+    mesh="package://rotors_description/meshes/propeller_fl.dae">
+    <origin xyz="0.08456 0.11463 -0.00501" rpy="0 0 0" />
+    <xacro:insert_block name="rotor_inertia" />
+  </xacro:vertical_rotor>
+
+  <xacro:vertical_rotor robot_namespace="L_${namespace}"
+    suffix="back_right"
+    direction="cw"
+    motor_constant="${motor_constant}"
+    moment_constant="${moment_constant}"
+    parent="L_${namespace}/base_link"
+    mass_rotor="${mass_rotor}"
+    radius_rotor="${radius_rotor}"
+    time_constant_up="${time_constant_up}"
+    time_constant_down="${time_constant_down}"
+    max_rot_velocity="${max_rot_velocity}"
+    motor_number="3"
+    rotor_drag_coefficient="${rotor_drag_coefficient}"
+    rolling_moment_coefficient="${rolling_moment_coefficient}"
+    color=""
+    use_own_mesh="true"
+    mesh="package://rotors_description/meshes/propeller_rr.dae">
+    <origin xyz="-0.09035 -0.11423 -0.00501" rpy="0 0 0" />
+    <xacro:insert_block name="rotor_inertia" />
+  </xacro:vertical_rotor>
+ 
+ <!--Mount a Camera-->
+  <xacro:camera_macro
+      namespace="L_${namespace}"
+      parent_link="L_${namespace}/base_link"
       camera_suffix="base"
       frame_rate="30.0"
       horizontal_fov="1.7"
