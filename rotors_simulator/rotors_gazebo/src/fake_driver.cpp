@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
   trajectory_pub = nh.advertise<trajectory_msgs::MultiDOFJointTrajectory>(
                     mav_msgs::default_topics::COMMAND_TRAJECTORY, 100);
 
-  traj_sub = nh.subscribe("/bebop2/command/trajectory", 1, &traj_callback);
+  traj_sub = nh.subscribe("command/trajectory", 1, &traj_callback);
 
   // Subscribe to message for enabling/disabling joystick control
   joy_enable_sub = nh.subscribe("joy_enable", 10, &joy_enable_callback);
