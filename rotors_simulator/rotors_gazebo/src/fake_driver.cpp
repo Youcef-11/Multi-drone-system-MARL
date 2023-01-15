@@ -95,14 +95,15 @@ int main(int argc, char** argv) {
   odom_sub = nh.subscribe("odom", 10, &odom_callback);
 
 
-  takeoff_sub = nh.subscribe("/bebop/takeoff", 10, &TakeoffCallback);
-  land_sub = nh.subscribe("/bebop/land", 10, &LandCallback);
-  stop_sub = nh.subscribe("/bebop/reset", 10, &StopCallback);
-  move_sub = nh.subscribe("/bebop/cmd_vel", 10, &MoveCallback);
+  takeoff_sub = nh.subscribe("takeoff", 10, &TakeoffCallback);
+  land_sub = nh.subscribe("land", 10, &LandCallback);
+  stop_sub = nh.subscribe("reset", 10, &StopCallback);
+  move_sub = nh.subscribe("cmd_vel", 10, &MoveCallback);
 
 
 
   ROS_INFO("Started velocity_control_with_joy.");
+  ROS_INFO("I don'tcare now what happen");
 
   nh.param("axis_roll_"  , axis_roll, 3);
   nh.param("axis_pitch_" , axis_pitch, 2);
@@ -274,10 +275,13 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
     }
   }
   if (takeoff){
+
+    std::cout << "loc : " << loc << std::endl;
     static trajectory_msgs::MultiDOFJointTrajectory trajectory_msg;
     Eigen::Vector3d desired_dposition( cos(init_yaw) * pitch - sin(init_yaw) * roll, 
                                     sin(init_yaw) * pitch + cos(init_yaw) * roll, 
                                     1.0);
+
     init_position += desired_dposition * max_vel * dt;
 
     init_yaw = init_yaw + max_yawrate * yaw * dt;
@@ -289,6 +293,7 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
 
     trajectory_msg.points[0].time_from_start = ros::Duration(0.01);
     trajectory_pub.publish(trajectory_msg);
+
     if (loc > 1.0){
       start = true;
       takeoff = false;

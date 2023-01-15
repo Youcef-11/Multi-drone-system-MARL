@@ -26,15 +26,15 @@
   <link name="world"/>
 
   <joint name="world_right_base_joint" type="floating">
+    <origin xyz="0.0 0.5 0.05" rpy="0.0 0.0 0.0"/>
     <parent link="world"/>
     <child link="R_${namespace}/base_link"/>
-    <origin xyz="0.0 0.5 0.05" rpy="0.0 0.0 0.0"/>
   </joint>
 
   <joint name="world_left_base_joint" type="floating">
+    <origin xyz="0.0 -0.5 0.05" rpy="0.0 0.0 0.0"/>
     <parent link="world"/>
     <child link="L_${namespace}/base_link"/>
-    <origin xyz="0.0 -0.5 0.05" rpy="0.0 0.0 0.0"/>
   </joint>
 
 

@@ -72,6 +72,10 @@
       <remap from="~joy"  to="joy" />
       <remap from="~odom" to="ground_truth/odometry" />
       <remap from="~command/trajectory" to="command/trajectory" />
+      <remap from="~cmd_vel" to="cmd_vel"/>
+      <remap from="~takeoff" to="takeoff"/>
+      <remap from="~land" to="land"/>
+      <remap from="~reset" to="reset"/>
       <rosparam> 
         max_vel: 3.0
         max_yawrate: 0.66
@@ -95,6 +99,10 @@
       <remap from="~joy"  to="joy" />
       <remap from="~odom" to="ground_truth/odometry" />
       <remap from="~command/trajectory" to="command/trajectory" />
+      <remap from="~cmd_vel" to="cmd_vel"/>
+      <remap from="~takeoff" to="takeoff"/>
+      <remap from="~land" to="land"/>
+      <remap from="~reset" to="reset"/>
       <rosparam> 
         max_vel: 3.0
         max_yawrate: 0.66
