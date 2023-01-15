@@ -20,7 +20,7 @@
 
 #include <fstream>
 #include <iostream>
-
+#include <bits/stdc++.h> 
 #include <Eigen/Core>
 #include <mav_msgs/conversions.h>
 #include <mav_msgs/default_topics.h>
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
   ros::NodeHandle nh("");
   ros::Publisher trajectory_pub =
       nh.advertise<trajectory_msgs::MultiDOFJointTrajectory>(
-      mav_msgs::default_topics::COMMAND_TRAJECTORY, 10);
+      "L_bebop2/command/trajectory", 10);
 
   ROS_INFO("Started waypoint_publisher.");
 
