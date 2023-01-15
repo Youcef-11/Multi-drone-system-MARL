@@ -1,0 +1,32 @@
+digraph G {
+"L_bebop2/base_link" -> "L_bebop2/base_link_inertia"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"world" -> "L_bebop2/base_link"[label=" Broadcaster: /gazebo\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"L_bebop2/base_link" -> "L_bebop2/camera_base_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"L_bebop2/camera_base_link" -> "L_bebop2/camera_base_optical_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"R_bebop2/base_link" -> "R_bebop2/base_link_inertia"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"world" -> "R_bebop2/base_link"[label=" Broadcaster: /gazebo\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"R_bebop2/base_link" -> "R_bebop2/camera_base_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"R_bebop2/camera_base_link" -> "R_bebop2/camera_base_optical_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"world" -> "L_bebop2/odometry_sensor1"[label=" Broadcaster: /gazebo\nAverage rate: 100.0\nBuffer length: 4.97\nMost recent transform: 168.67\nOldest transform: 163.7\n"];
+"L_bebop2/base_link" -> "L_bebop2/imu_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"L_bebop2/base_link" -> "L_bebop2/imugt_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"L_bebop2/base_link" -> "L_bebop2/odometry_sensor1_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"L_bebop2/base_link" -> "L_bebop2/odometry_sensorgt_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"L_bebop2/base_link" -> "L_bebop2/rotor_0"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"L_bebop2/base_link" -> "L_bebop2/rotor_1"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"L_bebop2/base_link" -> "L_bebop2/rotor_2"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"L_bebop2/base_link" -> "L_bebop2/rotor_3"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"R_bebop2/base_link" -> "R_bebop2/imu_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"R_bebop2/base_link" -> "R_bebop2/imugt_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"R_bebop2/base_link" -> "R_bebop2/odometry_sensor1_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"R_bebop2/base_link" -> "R_bebop2/odometry_sensorgt_link"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"R_bebop2/base_link" -> "R_bebop2/rotor_0"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"R_bebop2/base_link" -> "R_bebop2/rotor_1"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"R_bebop2/base_link" -> "R_bebop2/rotor_2"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"R_bebop2/base_link" -> "R_bebop2/rotor_3"[label=" Broadcaster: /robot_state_publisher\nAverage rate: 10.204\nBuffer length: 4.9\nMost recent transform: 168.6\nOldest transform: 163.7\n"];
+"world" -> "R_bebop2/odometry_sensor1"[label=" Broadcaster: /gazebo\nAverage rate: 100.201\nBuffer length: 4.97\nMost recent transform: 168.67\nOldest transform: 163.7\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 168.72"[ shape=plaintext ] ;
+}->"world";
+}

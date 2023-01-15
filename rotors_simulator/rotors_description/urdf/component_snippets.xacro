@@ -20,6 +20,12 @@
 -->
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <material name="red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+
+
   <xacro:property name="pi" value="3.14159265359" />
 
   <!-- Macro to add logging to a bag file. -->
