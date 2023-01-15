@@ -37,6 +37,11 @@
     <child link="L_${namespace}/base_link"/>
   </joint>
 
+  <joint name="right_left_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="L_${namespace}/base_link"/>
+    <child link="R_${namespace}/base_link"/>
+  </joint>
 
   <!-- Mount a generic odometry sensor without odometry map (working everywhere). -->
   <xacro:odometry_plugin_macro
