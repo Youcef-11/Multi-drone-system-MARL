@@ -197,9 +197,16 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
     Eigen::Affine3d eigen_affine;
     tf::poseMsgToEigen(odom_msg.pose.pose, eigen_affine);
     init_position = eigen_affine.matrix().topRightCorner<3, 1>();
+
+    // std::cout << "init position: " << init_position << std::endl;
+
     //init_yaw = eigen_affine.matrix().topLeftCorner<3, 3>().eulerAngles(0, 1, 2)(2);
     // Direct cosine matrix, a.k.a. rotation matrix
+
     Eigen::Matrix3d dcm = eigen_affine.matrix().topLeftCorner<3, 3>();
+
+    // std::cout << "dcm: " << dcm << std::endl;
+
     double phi = asin(dcm(2, 1));
     double cosphi = cos(phi);
     double the = atan2(-dcm(2, 0) / cosphi, dcm(2, 2) / cosphi);
@@ -208,6 +215,7 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
     init_pose_set = true;
   }  
 
+  // from joystik
   double roll = linear_y * axis_direction_roll;
   double pitch  = linear_x  * axis_direction_pitch;
   double thrust  = linear_z  * axis_direction_thrust;

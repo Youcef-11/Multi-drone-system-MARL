@@ -1,0 +1,15 @@
+kp_x: 10.0
+kp_y: 10.0
+kp_z: 10.0
+kp_yaw: 10.0
+
+ki_x: 1
+ki_y: 1
+ki_z: 1
+ki_yaw: 1
+
+kd_x: 1
+kd_y: 1
+kd_z: 1
+kd_yaw: 1
+

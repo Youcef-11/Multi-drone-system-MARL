@@ -45,14 +45,3 @@ install(TARGETS waypoint_publisher waypoint_publisher_file hovering_example
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-
-install(PROGRAMS scripts/take_off_drones.py
-   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-install(PROGRAMS scripts/waypoint_follower.py
-   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-install(PROGRAMS scripts/waypoints.py
-   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
