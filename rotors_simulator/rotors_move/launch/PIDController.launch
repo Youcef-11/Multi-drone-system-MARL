@@ -1,4 +1,4 @@
 <launch>
   <rosparam command="load" file="$(find rotors_move)/config/pid_param.yaml" />
-  <node name="PIDController" pkg="rotors_move" type="PIDController" />
+  <node name="PIDController" pkg="rotors_move" type="PIDController" output="screen" />
 </launch>
