@@ -9,7 +9,7 @@ from geometry_msgs.msg import Vector3
 
 class GazeboConnection():
 
-    def __init__(self, start_init_physics_parameters, reset_world_or_sim, max_retry = 20):
+    def __init__(self, start_init_physics_parameters=False, reset_world_or_sim="SIMULATION", max_retry = 20):
 
         self._max_retry = max_retry
         self.unpause = rospy.ServiceProxy('/gazebo/unpause_physics', Empty)
@@ -170,3 +170,9 @@ class GazeboConnection():
         self._gravity.z = z
 
         self.update_gravity_call()
+    
+
+
+if __name__ == '__main__':
+    rospy.init_node('test', log_level=rospy.DEBUG)
+    test = GazeboConnection()
