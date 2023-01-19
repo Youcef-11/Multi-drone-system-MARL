@@ -1,6 +1,6 @@
 kp: 0.2
-kd: 2
-ki: 0.00001
-kp_yaw: 1
-kd_yaw: 2
-ki_yaw: 0.0001
+kd: 1
+ki: 0
+kp_rpy: 2
+kd_rpy: 10
+ki_rpy: 0
