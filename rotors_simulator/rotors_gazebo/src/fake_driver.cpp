@@ -95,6 +95,7 @@ int main(int argc, char** argv) {
   odom_sub = nh.subscribe("odom", 10, &odom_callback);
 
 
+
   takeoff_sub = nh.subscribe("takeoff", 10, &TakeoffCallback);
   land_sub = nh.subscribe("land", 10, &LandCallback);
   stop_sub = nh.subscribe("reset", 10, &StopCallback);
@@ -301,6 +302,9 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
     Eigen::Vector3d desired_dposition( cos(init_yaw) * pitch - sin(init_yaw) * roll, 
                                       sin(init_yaw) * pitch + cos(init_yaw) * roll, 
                                       thrust);
+
+
+
     init_position += desired_dposition * max_vel * dt;
 
     init_yaw = init_yaw + max_yawrate * yaw * dt;
