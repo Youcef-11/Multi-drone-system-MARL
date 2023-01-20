@@ -1,0 +1,7 @@
+<launch>
+  <rosparam command="load" file="$(find set_position)/config/pid_param.yaml">
+  <node name="position_controller" pkg="set_position" type="set_position_node" output="screen" />
+  <remap from="odom" to="bebop/odom"/>
+  <remap from="cmd_vel" to="bebop/cmd_vel"/>
+  </node>
+</launch>

@@ -40,7 +40,11 @@
     <!-- <node name="joy_node" pkg="joy" type="joy_node">
       <param name="dev" value="$(arg dev)" />
     </node> -->
-
+    <node name="position_controller" pkg="set_position" type="set_position_node" output="screen">
+      <rosparam command="load" file="$(find set_position)/config/pid_param.yaml" />
+      <remap from="odom" to="ground_truth/odometry"/>
+      <remap from="cmd_vel" to="cmd_vel"/>
+    </node>
 
     <node name="fake_driver" pkg="rotors_gazebo" type="fake_driver" output="screen" >
       <!--<remap from="~odom" to="odometry_sensor1/odometry" />-->
@@ -84,6 +88,11 @@
       <param name="dev" value="$(arg dev)" />
     </node> -->
 
+    <node name="position_controller" pkg="set_position" type="set_position_node" output="screen">
+      <rosparam command="load" file="$(find set_position)/config/pid_param.yaml" />
+      <remap from="odom" to="ground_truth/odometry"/>
+      <remap from="cmd_vel" to="cmd_vel"/>
+    </node>
 
     <node name="fake_driver" pkg="rotors_gazebo" type="fake_driver" output="screen" >
       <!--<remap from="~odom" to="odometry_sensor1/odometry" />-->

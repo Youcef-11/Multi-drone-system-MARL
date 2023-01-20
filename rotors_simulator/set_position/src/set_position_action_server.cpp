@@ -101,14 +101,14 @@ class MoveDroneAction
     //initialize subscribers here
     void initializeSubscribers(void)
     {
-        gt_pos_sub_ = nh_.subscribe("/bebop/odom", 1, &MoveDroneAction::subscriberCb, this);
+        gt_pos_sub_ = nh_.subscribe("odom", 1, &MoveDroneAction::subscriberCb, this);
         ROS_INFO("Subscribers Initialized");
     }
     
     //initialize publishers here
     void initializePublishers(void)
     {
-        cmd_vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/bebop/cmd_vel", 1);
+        cmd_vel_pub_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1);
         // takeoff_pub_ = nh_.advertise<std_msgs::Empty>("/L_bebop2/takeoff", 1);
         ROS_INFO("Publishers Initialized");
     }
