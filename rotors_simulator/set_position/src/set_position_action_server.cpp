@@ -36,11 +36,11 @@ class MoveDroneAction
     std_msgs::Empty lift_;
     double kp, kd, ki;
     // double kp_yaw, ki_yaw, kd_yaw;
-    double kp_rpy, ki_rpy, kd_rpy;
-    double yaw_;
+    // double kp_rpy, ki_rpy, kd_rpy;
+    // double yaw_;
     // double roll_, pitch_;
     // double roll_error, pitch_error;
-    double yaw_error;
+    // double yaw_error;
     double x_error;
     double y_error;
     double z_error;
@@ -48,11 +48,11 @@ class MoveDroneAction
 
     // Define the previous error
     double prev_x_error_, prev_y_error_, prev_z_error_;
-    double prev_roll_error_, prev_pitch_error_, prev_yaw_error_; 
+    // double prev_roll_error_, prev_pitch_error_, prev_yaw_error_; 
 
     // Define the integral and derivative errors
     double i_error_x_, i_error_y_, i_error_z_;
-    double i_error_roll_, i_error_pitch_, i_error_yaw_;
+    // double i_error_roll_, i_error_pitch_, i_error_yaw_;
 
     public:
     MoveDroneAction(std::string name) : 
@@ -67,9 +67,9 @@ class MoveDroneAction
         // nh_.getParam("kp_yaw", kp_yaw);
         // nh_.getParam("kd_yaw", kd_yaw);
         // nh_.getParam("ki_yaw", ki_yaw);
-        nh_.getParam("kp_rpy", kp_rpy);
-        nh_.getParam("kd_rpy", kd_rpy);
-        nh_.getParam("ki_rpy", ki_rpy);
+        // nh_.getParam("kp_rpy", kp_rpy);
+        // nh_.getParam("kd_rpy", kd_rpy);
+        // nh_.getParam("ki_rpy", ki_rpy);
 
         prev_x_error_ = 0.0;
         prev_y_error_ = 0.0;
@@ -77,7 +77,7 @@ class MoveDroneAction
 
         // prev_roll_error_ = 0.0;
         // prev_pitch_error_ = 0.0;
-        prev_yaw_error_ = 0.0;
+        // prev_yaw_error_ = 0.0;
 
         i_error_x_ = 0.0;
         i_error_y_ = 0.0;
@@ -85,7 +85,7 @@ class MoveDroneAction
 
         // i_error_roll_ = 0.0;
         // i_error_pitch_ = 0.0;
-        i_error_yaw_ = 0.0;
+        // i_error_yaw_ = 0.0;
 
         action_server_.start();
     }
@@ -101,14 +101,14 @@ class MoveDroneAction
     //initialize subscribers here
     void initializeSubscribers(void)
     {
-        gt_pos_sub_ = nh_.subscribe("/L_bebop2/ground_truth/odometry", 1, &MoveDroneAction::subscriberCb, this);
+        gt_pos_sub_ = nh_.subscribe("/bebop/odom", 1, &MoveDroneAction::subscriberCb, this);
         ROS_INFO("Subscribers Initialized");
     }
     
     //initialize publishers here
     void initializePublishers(void)
     {
-        cmd_vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/L_bebop2/cmd_vel", 1);
+        cmd_vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/bebop/cmd_vel", 1);
         // takeoff_pub_ = nh_.advertise<std_msgs::Empty>("/L_bebop2/takeoff", 1);
         ROS_INFO("Publishers Initialized");
     }
@@ -121,24 +121,24 @@ class MoveDroneAction
         pos_info_.position.x = info->pose.pose.position.x;
         pos_info_.position.y = info->pose.pose.position.y;
         pos_info_.position.z = info->pose.pose.position.z;
-        pos_info_.orientation.x = info->pose.pose.orientation.x;
-        pos_info_.orientation.y = info->pose.pose.orientation.y,
-        pos_info_.orientation.z = info->pose.pose.orientation.z;
-        pos_info_.orientation.w = info->pose.pose.orientation.w;
+        // pos_info_.orientation.x = info->pose.pose.orientation.x;
+        // pos_info_.orientation.y = info->pose.pose.orientation.y,
+        // pos_info_.orientation.z = info->pose.pose.orientation.z;
+        // pos_info_.orientation.w = info->pose.pose.orientation.w;
 
-        tf2::Quaternion quat(
-            info->pose.pose.orientation.x,
-            info->pose.pose.orientation.y,
-            info->pose.pose.orientation.z,
-            info->pose.pose.orientation.w
-        );
+        // tf2::Quaternion quat(
+        //     info->pose.pose.orientation.x,
+        //     info->pose.pose.orientation.y,
+        //     info->pose.pose.orientation.z,
+        //     info->pose.pose.orientation.w
+        // );
 
-        tf2::Matrix3x3 mat(quat);
-        double roll, pitch, yaw;
-        mat.getRPY(roll, pitch, yaw);
+        // tf2::Matrix3x3 mat(quat);
+        // double roll, pitch, yaw;
+        // mat.getRPY(roll, pitch, yaw);
         // this->roll_ = roll;
         // this->pitch_ = pitch;
-        this->yaw_ = yaw;
+        // this->yaw_ = yaw;
     }
 
     
@@ -164,20 +164,20 @@ class MoveDroneAction
         prev_x_error_ = 0;
         prev_y_error_ = 0;
         prev_z_error_ = 0;
-        prev_yaw_error_ = 0;
+        // prev_yaw_error_ = 0;
 
         //ros::Duration(0.5).sleep();
         // takeoff_pub_.publish(lift_); //take off drone - though ideally should not be required. may be some simulation bug
         
         std::cout<<"Position coordinates received are:\n";
-        std::cout<<"x: "<<goal->x<<"\ny: "<<goal->y<<"\nz: "<<goal->z<<"\nyaw: "<<goal->yaw<<"\n";
+        std::cout<<"x: "<<goal->x<<"\ny: "<<goal->y<<"\nz: "<<goal->z<<"\n";
         do
         {   
-            tf2::Quaternion desired_quat, current_quat(pos_info_.orientation.x, pos_info_.orientation.y, 
-                                                       pos_info_.orientation.z,pos_info_.orientation.w);
+            // tf2::Quaternion desired_quat, current_quat(pos_info_.orientation.x, pos_info_.orientation.y, 
+            //                                            pos_info_.orientation.z,pos_info_.orientation.w);
 
             // Set the desired quaternion using roll, pitch, and yaw
-            desired_quat.setRPY(0, 0, goal->yaw * M_PI / 180.0);
+            // desired_quat.setRPY(0, 0, goal->yaw * M_PI / 180.0);
 
             
 
@@ -185,13 +185,13 @@ class MoveDroneAction
             y_error = (double )(goal->y - pos_info_.position.y);
             z_error = (double )(goal->z - pos_info_.position.z);
             //Compute the error quaternion
-            tf2::Quaternion error_quat = desired_quat*current_quat.inverse();
+            // tf2::Quaternion error_quat = desired_quat*current_quat.inverse();
             // Compute the angular velocity error
-            tf2::Vector3 error = error_quat.getAngle() * error_quat.getAxis();
+            // tf2::Vector3 error = error_quat.getAngle() * error_quat.getAxis();
             
             // roll_error = error.x();
             // pitch_error = error.y();
-            yaw_error = error.z();
+            // yaw_error = error.z();
 
             // wrap yaw error between -PI and PI degrees
             // if ((double )(yaw_error) > M_PI) {
@@ -206,7 +206,7 @@ class MoveDroneAction
             // i_error_z_ += z_error;
             // i_error_roll_ += roll_error;
             // i_error_pitch_ += pitch_error;
-            i_error_yaw_ += yaw_error;
+            // i_error_yaw_ += yaw_error;
 
             // Compute the derivative error
             double d_error_x = (x_error - prev_x_error_);
@@ -214,7 +214,7 @@ class MoveDroneAction
             double d_error_z = (z_error - prev_z_error_);
             // double d_error_roll = (roll_error - prev_roll_error_);
             // double d_error_pitch = (pitch_error - prev_pitch_error_);
-            double d_error_yaw = (yaw_error - prev_yaw_error_);  
+            // double d_error_yaw = (yaw_error - prev_yaw_error_);  
 
             // Compute the control outputs
             // double vx = kp * x_error + ki * i_error_x_ + kd * d_error_x;
@@ -226,7 +226,7 @@ class MoveDroneAction
             double vx = kp * x_error + kd * d_error_x;
             double vy = kp * y_error + kd * d_error_y;
             double vz = kp * z_error + kd * d_error_z;  
-            double vyaw = kp_rpy * yaw_error + kd_rpy * d_error_yaw;   
+            // double vyaw = kp_rpy * yaw_error + kd_rpy * d_error_yaw;   
             
 
             // Important : Don't forget to normalize commands 
@@ -235,11 +235,11 @@ class MoveDroneAction
             if (vz > 1) vz=1; else if(vz < -1) vz=-1;
             // if (vroll > 1) vroll=1; else vroll=-1;
             // if (vpitch > 1) vpitch=1; else vpitch=-1;
-            if (vyaw > 1) vyaw=1; else if(vyaw < -1) vyaw=-1;
+            // if (vyaw > 1) vyaw=1; else if(vyaw < -1) vyaw=-1;
 
 
 
-            ROS_INFO("Velocities :\nVx : %f\nVy : %f\nVz : %f\nVyaw : %f", vx, vy, vz, vyaw);
+            ROS_INFO("Velocities :\nVx : %f\nVy : %f\nVz : %f", vx, vy, vz);
 
             // Save the errors for the next iteration
             prev_x_error_ = x_error;
@@ -247,7 +247,7 @@ class MoveDroneAction
             prev_z_error_ = z_error;
             // prev_roll_error_ = roll_error;
             // prev_pitch_error_ = pitch_error;
-            prev_yaw_error_ = yaw_error;
+            // prev_yaw_error_ = yaw_error;
             
             // send velocity
             move.linear.x = vx;
@@ -255,7 +255,7 @@ class MoveDroneAction
             move.linear.z = vz;
             // move.angular.x = vroll;
             // move.angular.y = vpitch;
-            move.angular.z = vyaw;
+            // move.angular.z = vyaw;
 
             cmd_vel_pub_.publish(move);
 
@@ -263,7 +263,7 @@ class MoveDroneAction
 
             action_server_.publishFeedback(feedback_); //echo /action_server/feedback
 
-            ROS_INFO("Velocities :\nCurrent Yaw : %f\nTarget Yaw : %f\nYaw error : %f", yaw_*180.0/M_PI, goal->yaw, yaw_error);
+            // ROS_INFO("Velocities :\nCurrent Yaw : %f\nTarget Yaw : %f\nYaw error : %f", yaw_*180.0/M_PI, goal->yaw, yaw_error);
 
             //take care of preemption here
             if (action_server_.isPreemptRequested() || !ros::ok())
@@ -276,7 +276,7 @@ class MoveDroneAction
             }
             rate.sleep();
         }
-        while(feedback_.distance > 0.08 || yaw_error > 0.04);
+        while(feedback_.distance > 0.08);
 
         move.linear.x = 0;
         move.linear.y = 0;
