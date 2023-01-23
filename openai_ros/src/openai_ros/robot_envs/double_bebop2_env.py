@@ -150,6 +150,21 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
     def _L_odom_cb(self, data):
         self.L_odom = data
 
+        # Gazebo fait ce qui suit automatiquemnt, ca ne sera pas vrai dans la réalité.
+        # self.L_pose_from_odom = Pose()
+        # #Position
+        # self.L_pose_from_odom.position.x = self.L_odom.pose.pose.position.x
+        # self.L_pose_from_odom.position.y = self.L_odom.pose.pose.position.y + 0.5
+        # self.L_pose_from_odom.position.z = self.L_odom.pose.pose.position.z
+
+        # #Orientation
+        # self.L_pose_from_odom.orientation.x = self.L_odom.pose.pose.orientation.x
+        # self.L_pose_from_odom.orientation.y = self.L_odom.pose.pose.orientation.y
+        # self.L_pose_from_odom.orientation.z = self.L_odom.pose.pose.orientation.z
+        # self.L_pose_from_odom.orientation.w = self.L_odom.pose.pose.orientation.w
+
+
+
     def _L_pose_cb(self, data):
         self.L_pose = data
         
@@ -158,6 +173,23 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
     def _R_odom_cb(self, data):
         self.R_odom = data
+
+
+        # Gazebo fait ce qui suit automatiquemnt, ca ne sera pas vrai dans la réalité.
+
+        # self.R_pose_from_odom = Pose()
+        # #Position
+        # self.R_pose_from_odom.position.x = self.R_odom.pose.pose.position.x
+        # self.R_pose_from_odom.position.y = self.R_odom.pose.pose.position.y - 0.5
+        # self.R_pose_from_odom.position.z = self.R_odom.pose.pose.position.z
+
+        # #Orientation
+        # self.R_pose_from_odom.orientation.x = self.R_odom.pose.pose.orientation.x
+        # self.R_pose_from_odom.orientation.y = self.R_odom.pose.pose.orientation.y
+        # self.R_pose_from_odom.orientation.z = self.R_odom.pose.pose.orientation.z
+        # self.R_pose_from_odom.orientation.w = self.R_odom.pose.pose.orientation.w
+
+
 
     def _R_pose_cb(self, data):
         self.R_pose = data
@@ -218,11 +250,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
             self.R_takeoff_pub.publish(Empty())
 
         # When it takes of value of height is around 1.3
-        self.wait_for_height(heigh_value_to_check=0.8,
-                             smaller_than=False,
-                             epsilon=0.05,
-                             update_rate=10,
-                             mode = mode)
+        self.wait_for_height(heigh_value_to_check=1, smaller_than=False, epsilon=0.05, update_rate=10, mode = mode)
         self.gazebo.pauseSim()
 
 
@@ -263,6 +291,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         Checks if current height is smaller or bigger than a value
         :param: smaller_than: If True, we will wait until value is smaller than the one given
         """
+        #TODO: Régler le bug a cause duquel les deux drones ne takeoff pas a la meme hauteur.
 
         assert mode in ("L", "R", "both")
 
@@ -272,7 +301,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
         rospy.logdebug("epsilon>>" + str(epsilon))
 
-        while not rospy.is_shutdown():
+        while not rospy.is_shutdown() and start_wait_time + 4 > rospy.get_rostime().to_sec():
             if mode == "L" or "both":
                 L_current_pose = self.check_sensor(self.L_pose_name, Pose)
                 L_current_height = L_current_pose.position.z
@@ -325,5 +354,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         
         # peut etre est il nécessaire d'attendre un peu ici
         
+
+
 
 

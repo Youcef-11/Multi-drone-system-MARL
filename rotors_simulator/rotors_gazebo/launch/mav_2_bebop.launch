@@ -36,7 +36,6 @@
       <arg name="log_file" value="$(arg log_file)"/>
       <arg name="y" value = "0.5"/>
 
-
     </include>
 
 

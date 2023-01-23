@@ -4,7 +4,8 @@ from openai_ros.openai_ros_common import ROSLauncher
 from gym.envs.registration import register
 from openai_ros.task_envs.task_commons import LoadYamlFileParamsTest
 import rospy
-from geometry_msgs.msg import Vector3
+from geometry_msgs.msg import Vector3, Pose
+from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 import time
 
@@ -86,19 +87,63 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
     def _get_obs(self):
         """
-        Here we define what sensor data of our robots observations
-        To know which Variables we have acces to, we need to read the
-        MyRobotEnv API DOCS
-        :return: observations
+        Obsevations : 
+        -   distance between drones obs[0...2]
+        -   L drone speed, R drone speed : obs[3...6], obs[6...9] 
+        -   Euler orientaiton of both drones
+
         """
+        # Distance
+        dist_x = abs(self.L_pose.position.x - self.R_pose.position.x)
+        dist_y = abs(self.L_pose.position.y - self.R_pose.position.y)
+        dist_z = abs(self.L_pose.position.z - self.R_pose.position.z)
+
+        # Speed
+        L_speed_x = self.L_odom.twist.twist.linear.x
+        L_speed_y = self.L_odom.twist.twist.linear.y
+        L_speed_z = self.L_odom.twist.twist.linear.z
+        L_angular_z= self.L_odom.twist.twist.angular.x
+
+        R_speed_x = self.R_odom.twist.twist.linear.x
+        R_speed_y = self.R_odom.twist.twist.linear.y
+        R_speed_z = self.R_odom.twist.twist.linear.z
+        R_angular_z= self.R_odom.twist.twist.angular.x
+
+        # Orientation
+        L_roll, L_pitch, L_yaw = self.get_orientation_euler(self.L_odom.pose.pose.orientation)
+        R_roll, R_pitch, R_yaw = self.get_orientation_euler(self.R_odom.pose.pose.orientation)
+
+        observation = [dist_x,dist_y,dist_z, L_speed_x, L_speed_y, L_speed_z, L_angular_z, R_speed_x, R_speed_y, R_speed_z, R_angular_z, L_roll, L_pitch, L_yaw, R_roll, R_pitch, R_yaw]
+        return  observation
+
+
+
+
+
 
 
     def _is_done(self, observations):
         """
         Decide if episode is done based on the observations
+        
+        L'episode se finit si: 
+        -   l'un des drones se retourne.
+        -   la distance devient trop élevée ou trop basse entre les deux drones
+
         """
-        # TODO
         done = False
+        # Check if one of the two UAV is upside down
+        # L_roll = observations[10]
+        # L_pitch = observations[11]
+
+        # R_roll = observations[13]
+        # R_pitch = observations[14]
+
+        # if L_pitch > 1.57 or L_roll > 1.57:
+        #     rospy.logwarn("L'un des drones s'est retourné")
+        #     done = True
+
+
         return done
 
     def _compute_reward(self, observations, done):
@@ -110,3 +155,15 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         
     # Internal TaskEnv Methods
 
+
+
+
+    def get_orientation_euler(self, quaternion_vector):
+        # We convert from quaternions to euler
+        orientation_list = [quaternion_vector.x,
+                            quaternion_vector.y,
+                            quaternion_vector.z,
+                            quaternion_vector.w]
+
+        roll, pitch, yaw = euler_from_quaternion(orientation_list)
+        return roll, pitch, yaw
