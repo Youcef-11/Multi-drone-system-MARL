@@ -11,6 +11,7 @@
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Transform.h>
 #include <geometry_msgs/Vector3.h>
+#include <unistd.h>
 
 
 
@@ -29,7 +30,7 @@
 #define DEG2RAD(x) ((x) / 180.0 * M_PI)
 
 ros::Publisher trajectory_pub;
-ros::Subscriber odom_sub, joy_sub, joy_enable_sub, takeoff_sub, land_sub, stop_sub, move_sub, traj_sub;
+ros::Subscriber odom_sub, joy_sub, joy_enable_sub, takeoff_sub, land_sub, stop_sub, move_sub, traj_sub, reset_pose_sub;
 nav_msgs::Odometry odom_msg;
 sensor_msgs::Joy joy_msg;
 
@@ -71,6 +72,7 @@ void TakeoffCallback(const std_msgs::Empty& msg);
 void LandCallback(const std_msgs::Empty& msg);
 void StopCallback(const std_msgs::Empty& msg);
 void MoveCallback(const geometry_msgs::Twist& msg);
+void reset_pose_callback(const std_msgs::Empty& msg);
 void StopMav();
 
 
@@ -100,6 +102,7 @@ int main(int argc, char** argv) {
   land_sub = nh.subscribe("land", 10, &LandCallback);
   stop_sub = nh.subscribe("reset", 10, &StopCallback);
   move_sub = nh.subscribe("cmd_vel", 10, &MoveCallback);
+  reset_pose_sub = nh.subscribe("reset_pose", 10, &reset_pose_callback);
 
 
 
@@ -121,11 +124,20 @@ int main(int argc, char** argv) {
   ros::spin();
 }
 
+
 void traj_callback(
       const trajectory_msgs::MultiDOFJointTrajectoryConstPtr& msg){
 
       loc = msg->points[0].transforms[0].translation.z;
       //ROS_INFO("%f", loc);
+}
+
+void reset_pose_callback(const std_msgs::Empty& msg){
+  // On créer un topic pour reset init_pose_set. Sans ca, lors du reset world, le drone voudra retourenr a sa position avant le reset
+  emergency = true;
+  takeoff = false;
+  start = false;
+  init_pose_set = false;
 }
 
 void StopCallback(const std_msgs::Empty& msg){

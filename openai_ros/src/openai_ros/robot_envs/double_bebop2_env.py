@@ -4,6 +4,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist, Pose
 from std_msgs.msg import Empty
 import rospy
+import time
 
 
 class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
@@ -15,9 +16,11 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         self.L_odom_name = "/L_bebop2/ground_truth/odometry"
         self.L_pose_name = "/L_bebop2/ground_truth/pose"
 
+
         self.L_cmd_vel_name = "/L_bebop2/cmd_vel"
         self.L_takeoff_name = "/L_bebop2/takeoff"
         self.L_land_name = "/L_bebop2/land"
+        self.L_reset_name = "/L_bebop2/fake_driver/reset_pose"
 
         # Topic names R_BEBOP
         self.R_image_name = "/R_bebop2/camera_base/image_raw"
@@ -27,6 +30,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         self.R_cmd_vel_name = "/R_bebop2/cmd_vel"
         self.R_takeoff_name = "/R_bebop2/takeoff"
         self.R_land_name = "/R_bebop2/land"
+        self.R_reset_name = "/R_bebop2/fake_driver/reset_pose"
 
 
 
@@ -60,10 +64,12 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         self.L_cmd_pub = rospy.Publisher(self.L_cmd_vel_name, Twist, queue_size=1)
         self.L_land_pub = rospy.Publisher(self.L_land_name, Empty, queue_size=1)
         self.L_takeoff_pub = rospy.Publisher(self.L_takeoff_name, Empty, queue_size=1)
+        self.L_reset_pub = rospy.Publisher(self.L_reset_name, Empty, queue_size=1)
 
         self.R_cmd_pub = rospy.Publisher(self.R_cmd_vel_name, Twist, queue_size=1)
         self.R_land_pub = rospy.Publisher(self.R_land_name, Empty, queue_size=1)
         self.R_takeoff_pub = rospy.Publisher(self.R_takeoff_name, Empty, queue_size=1)
+        self.R_reset_pub = rospy.Publisher(self.R_reset_name, Empty, queue_size=1)
 
 
         self._check_all_pub_ready()
@@ -220,6 +226,38 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         self.gazebo.pauseSim()
 
 
+    def reset_pub(self):
+        self.gazebo.unpauseSim()
+        self.L_reset_pub.publish(Empty())
+        self.R_reset_pub.publish(Empty())
+        self.gazebo.pauseSim()
+
+    def land(self, mode = "both"):
+        """Envoi un message Empty dans les publishers des drones en fonction du paramètre mode
+
+        Args:
+            mode (str, optional): "L" Pour takeoff bebop L, "R" Pour takeoff Bebop R, "both" fait voler les deux. Defaults to "both".
+        """
+        assert mode in ("L", "R", "both")
+
+        self.gazebo.unpauseSim()
+
+        if mode == "L" or mode == "both":
+            self.check_publisher(self.L_land_pub)
+            self.L_land_pub.publish(Empty())
+
+        if mode == "R" or mode == "both":
+            self.check_publisher(self.R_land_pub)
+            self.R_land_pub.publish(Empty())
+
+        # When it takes of value of height is around 1.3
+        # self.wait_for_height(heigh_value_to_check=0.8,
+        #                      smaller_than=False,
+        #                      epsilon=0.05,
+        #                      update_rate=10,
+        #                      mode = mode)
+        self.gazebo.pauseSim()
+
     def wait_for_height(self, heigh_value_to_check, smaller_than, epsilon, update_rate, mode = "both"):
         """
         Checks if current height is smaller or bigger than a value
@@ -268,5 +306,24 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
                 break
             rospy.logwarn("Height Not there yet, keep waiting...")
             rate.sleep()
+
+
+
+    def publish_cmd(self,name, lin_x,lin_y,lin_z, ang_z):
+        cmd = Twist()
+        cmd.linear.x = lin_x
+        cmd.linear.y = lin_y
+        cmd.linear.z = lin_z
+        cmd.angular.z = ang_z
+
+        if name == "R_bebop2" or "both":
+            self.R_cmd_pub.publish(cmd)
+            rospy.logdebug("R_bebop2 cmd_vel published")
+        elif name == "L_bebop2" or "both":
+            self.L_cmd_pub.publish(cmd)
+            rospy.logdebug("L_bebop2 cmd_vel published")
+        
+        # peut etre est il nécessaire d'attendre un peu ici
+        
 
 

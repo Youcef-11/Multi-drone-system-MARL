@@ -5,6 +5,8 @@ from gym.envs.registration import register
 from openai_ros.task_envs.task_commons import LoadYamlFileParamsTest
 import rospy
 from geometry_msgs.msg import Vector3
+from tf.transformations import euler_from_quaternion
+import time
 
 # The path is __init__.py of openai_ros, where we import the MovingCubeOneDiskWalkEnv directly
 timestep_limit_per_episode = 1000 # Can be any Value
@@ -51,7 +53,15 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         """Sets the Robot in its init pose
         Appelée lorsqu'on reset la simulation
         """
-        # TODO
+        # On reset cmd_vel
+        self.publish_cmd("both", 0,0,0,0)
+        self.gazebo.pauseSim()
+        self.gazebo.resetSim()
+        self.gazebo.unpauseSim()
+        # Il est important dans notre cas de reset_pub juste apres le resest, c'est pour ca on reset (c'est pas grv si on resset 2 fois)
+        self.reset_pub()
+        # il est necessaire de reset deux fois pour que cela soit pris en compte 
+
 
     def _init_env_variables(self):
         """
@@ -60,13 +70,19 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         :return:
         """
         self.takeoff()
+        self.cumulated_reward = 0
 
 
     def _set_action(self, action):
         """
         Move the robot based on the action variable given
+        On utilise PPO continue, les actions seront un vecteur de taille 4 continue
+        action = [linear.x, linear.y, linear.z, angular.z]
+        On fait bouger le R_bebop qui suit le L_bebop
         """
-        # TODO: Move robot
+        lin_x, lin_y, lin_z, ang_z = action
+        self.publish_cmd("R_bebop2",lin_x,lin_y,lin_z,ang_z)
+        
 
     def _get_obs(self):
         """
@@ -75,8 +91,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         MyRobotEnv API DOCS
         :return: observations
         """
-        observations = 2
-        return observations
+
 
     def _is_done(self, observations):
         """

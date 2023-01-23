@@ -19,6 +19,12 @@ if __name__ == '__main__':
     rospy.logwarn("GYM ENVIRONMENT DONE")
 
     env.reset()
+    env.reset()
+    env.reset()
+    env.reset()
+    env.reset()
+    env.reset()
+    env.reset()
 
 
 
