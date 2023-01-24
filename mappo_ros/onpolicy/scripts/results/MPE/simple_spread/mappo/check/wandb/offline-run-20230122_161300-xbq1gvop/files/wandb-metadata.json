@@ -1,0 +1,42 @@
+{
+    "os": "Windows-10-10.0.22621-SP0",
+    "python": "3.6.1",
+    "heartbeatAt": "2023-01-22T15:13:00.918478",
+    "startedAt": "2023-01-22T15:13:00.514612",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "train_mpe.py",
+    "codePath": "onpolicy\\scripts\\train\\train_mpe.py",
+    "git": {
+        "remote": "https://github.com/marlbenchmark/on-policy.git",
+        "commit": "79f6591882088a0f583f7a4bcba44041141f25f5"
+    },
+    "email": "gontran.gilles@gmail.com",
+    "root": "C:/Users/GILLES/Documents/Gontran/__SorbonneUniversit\u00e9/__M2/S3/PFE/on-policy",
+    "host": "LAPTOP-SAK006J7",
+    "username": "GILLES",
+    "executable": "C:\\Users\\GILLES\\anaconda3\\envs\\marl\\python.exe",
+    "cpu_count": 4,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 1600.0,
+        "min": 0.0,
+        "max": 1800.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1600.0,
+            "min": 0.0,
+            "max": 1800.0
+        }
+    ],
+    "disk": {
+        "total": 219.74054336547852,
+        "used": 201.3857536315918
+    },
+    "memory": {
+        "total": 7.81884765625
+    }
+}

@@ -1,0 +1,160 @@
+2023-01-22 13:54:18,628 INFO    StreamThr :10488 [internal.py:wandb_internal():90] W&B internal server running at pid: 10488, started at: 2023-01-22 13:54:18.628559
+2023-01-22 13:54:18,644 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status
+2023-01-22 13:54:18,755 INFO    WriterThread:10488 [datastore.py:open_for_write():85] open: C:\Users\GILLES\Documents\Gontran\__SorbonneUniversité\__M2\S3\PFE\on-policy\onpolicy\scripts\results\MPE\simple_spread\mappo\check\wandb\offline-run-20230122_135418-drdcq2d9\run-drdcq2d9.wandb
+2023-01-22 13:54:19,085 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: run_start
+2023-01-22 13:54:19,133 DEBUG   HandlerThread:10488 [system_info.py:__init__():31] System info init
+2023-01-22 13:54:19,133 DEBUG   HandlerThread:10488 [system_info.py:__init__():46] System info init done
+2023-01-22 13:54:19,133 INFO    HandlerThread:10488 [system_monitor.py:start():151] Starting system monitor
+2023-01-22 13:54:19,147 INFO    SystemMonitor:10488 [system_monitor.py:_start():116] Starting system asset monitoring threads
+2023-01-22 13:54:19,147 INFO    HandlerThread:10488 [system_monitor.py:probe():172] Collecting system info
+2023-01-22 13:54:19,147 INFO    SystemMonitor:10488 [interfaces.py:start():168] Started cpu
+2023-01-22 13:54:19,158 DEBUG   HandlerThread:10488 [system_info.py:probe():195] Probing system
+2023-01-22 13:54:19,158 INFO    SystemMonitor:10488 [interfaces.py:start():168] Started disk
+2023-01-22 13:54:19,167 INFO    SystemMonitor:10488 [interfaces.py:start():168] Started memory
+2023-01-22 13:54:19,201 INFO    SystemMonitor:10488 [interfaces.py:start():168] Started network
+2023-01-22 13:54:19,245 DEBUG   HandlerThread:10488 [system_info.py:_probe_git():180] Probing git
+2023-01-22 13:54:19,500 DEBUG   HandlerThread:10488 [system_info.py:_probe_git():188] Probing git done
+2023-01-22 13:54:19,500 DEBUG   HandlerThread:10488 [system_info.py:probe():241] Probing system done
+2023-01-22 13:54:19,500 DEBUG   HandlerThread:10488 [system_monitor.py:probe():181] {'os': 'Windows-10-10.0.22621-SP0', 'python': '3.6.1', 'heartbeatAt': '2023-01-22T12:54:19.158062', 'startedAt': '2023-01-22T12:54:18.517262', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': 'train_mpe.py', 'codePath': 'onpolicy\\scripts\\train\\train_mpe.py', 'git': {'remote': 'https://github.com/marlbenchmark/on-policy.git', 'commit': '79f6591882088a0f583f7a4bcba44041141f25f5'}, 'email': 'gontran.gilles@gmail.com', 'root': 'C:/Users/GILLES/Documents/Gontran/__SorbonneUniversité/__M2/S3/PFE/on-policy', 'host': 'LAPTOP-SAK006J7', 'username': 'GILLES', 'executable': 'C:\\Users\\GILLES\\anaconda3\\envs\\marl\\python.exe', 'cpu_count': 4, 'cpu_count_logical': 8, 'cpu_freq': {'current': 1600.0, 'min': 0.0, 'max': 1800.0}, 'cpu_freq_per_core': [{'current': 1600.0, 'min': 0.0, 'max': 1800.0}], 'disk': {'total': 219.74054336547852, 'used': 200.17695236206055}, 'memory': {'total': 7.81884765625}}
+2023-01-22 13:54:19,505 INFO    HandlerThread:10488 [system_monitor.py:probe():182] Finished collecting system info
+2023-01-22 13:54:19,505 INFO    HandlerThread:10488 [system_monitor.py:probe():185] Publishing system info
+2023-01-22 13:54:19,505 DEBUG   HandlerThread:10488 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2023-01-22 13:54:19,551 DEBUG   HandlerThread:10488 [system_info.py:_save_pip():67] Saving pip packages done
+2023-01-22 13:54:19,551 DEBUG   HandlerThread:10488 [system_info.py:_save_conda():75] Saving list of conda packages installed into the current environment
+2023-01-22 13:54:19,556 ERROR   HandlerThread:10488 [system_info.py:_save_conda():85] Error saving conda packages: [WinError 2] Le fichier spécifié est introuvable
+Traceback (most recent call last):
+  File "C:\Users\GILLES\anaconda3\envs\marl\lib\site-packages\wandb\sdk\internal\system\system_info.py", line 82, in _save_conda
+    ["conda", "env", "export"], stdout=f, stderr=subprocess.DEVNULL
+  File "C:\Users\GILLES\anaconda3\envs\marl\lib\subprocess.py", line 267, in call
+    with Popen(*popenargs, **kwargs) as p:
+  File "C:\Users\GILLES\anaconda3\envs\marl\lib\subprocess.py", line 707, in __init__
+    restore_signals, start_new_session)
+  File "C:\Users\GILLES\anaconda3\envs\marl\lib\subprocess.py", line 990, in _execute_child
+    startupinfo)
+FileNotFoundError: [WinError 2] Le fichier spécifié est introuvable
+2023-01-22 13:54:19,561 DEBUG   HandlerThread:10488 [system_info.py:_save_conda():86] Saving conda packages done
+2023-01-22 13:54:19,563 INFO    HandlerThread:10488 [system_monitor.py:probe():187] Finished publishing system info
+2023-01-22 13:54:23,888 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:54:23,889 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:54:28,932 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:54:28,932 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:54:33,986 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:54:33,987 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:54:39,032 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:54:39,034 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:54:44,114 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:54:44,114 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:54:49,224 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:54:49,224 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:54:54,365 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:54:54,387 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:54:59,472 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:54:59,472 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:55:04,525 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:55:04,527 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:55:09,557 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:55:09,559 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:55:12,766 DEBUG   SenderThread:10488 [sender.py:send():334] send: exit
+2023-01-22 13:55:12,769 INFO    SenderThread:10488 [sender.py:send_exit():557] handling exit code: 255
+2023-01-22 13:55:12,769 INFO    SenderThread:10488 [sender.py:send_exit():559] handling runtime: 53
+2023-01-22 13:55:12,773 INFO    SenderThread:10488 [sender.py:_save_file():1319] saving file wandb-summary.json with policy end
+2023-01-22 13:55:12,775 INFO    SenderThread:10488 [sender.py:send_exit():565] send defer
+2023-01-22 13:55:12,775 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,775 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 0
+2023-01-22 13:55:12,778 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,778 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 0
+2023-01-22 13:55:12,778 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 1
+2023-01-22 13:55:12,780 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,780 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 1
+2023-01-22 13:55:12,782 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,782 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 1
+2023-01-22 13:55:12,782 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 2
+2023-01-22 13:55:12,782 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,782 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 2
+2023-01-22 13:55:12,782 INFO    HandlerThread:10488 [system_monitor.py:finish():161] Stopping system monitor
+2023-01-22 13:55:12,782 DEBUG   SystemMonitor:10488 [system_monitor.py:_start():130] Starting system metrics aggregation loop
+2023-01-22 13:55:12,798 DEBUG   SystemMonitor:10488 [system_monitor.py:_start():137] Finished system metrics aggregation loop
+2023-01-22 13:55:12,798 DEBUG   SystemMonitor:10488 [system_monitor.py:_start():141] Publishing last batch of metrics
+2023-01-22 13:55:12,798 INFO    HandlerThread:10488 [interfaces.py:finish():175] Joined cpu
+2023-01-22 13:55:12,798 INFO    HandlerThread:10488 [interfaces.py:finish():175] Joined disk
+2023-01-22 13:55:12,798 INFO    HandlerThread:10488 [interfaces.py:finish():175] Joined memory
+2023-01-22 13:55:12,798 INFO    HandlerThread:10488 [interfaces.py:finish():175] Joined network
+2023-01-22 13:55:12,806 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,806 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 2
+2023-01-22 13:55:12,806 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 3
+2023-01-22 13:55:12,806 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,806 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 3
+2023-01-22 13:55:12,813 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,813 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 3
+2023-01-22 13:55:12,813 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 4
+2023-01-22 13:55:12,813 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,813 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 4
+2023-01-22 13:55:12,813 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,813 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 4
+2023-01-22 13:55:12,813 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 5
+2023-01-22 13:55:12,813 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,813 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 5
+2023-01-22 13:55:12,822 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,823 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 5
+2023-01-22 13:55:12,823 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 6
+2023-01-22 13:55:12,823 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,823 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 6
+2023-01-22 13:55:12,823 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,823 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 6
+2023-01-22 13:55:12,823 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 7
+2023-01-22 13:55:12,823 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: status_report
+2023-01-22 13:55:12,823 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,823 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 7
+2023-01-22 13:55:12,823 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: status_report
+2023-01-22 13:55:12,829 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,829 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 7
+2023-01-22 13:55:12,829 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 8
+2023-01-22 13:55:12,829 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,829 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 8
+2023-01-22 13:55:12,832 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,832 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 8
+2023-01-22 13:55:12,832 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 9
+2023-01-22 13:55:12,833 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,834 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 9
+2023-01-22 13:55:12,834 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,834 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 9
+2023-01-22 13:55:12,835 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 10
+2023-01-22 13:55:12,836 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,836 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 10
+2023-01-22 13:55:12,836 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,836 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 10
+2023-01-22 13:55:12,836 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 11
+2023-01-22 13:55:12,836 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,836 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 11
+2023-01-22 13:55:12,836 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,836 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 11
+2023-01-22 13:55:12,836 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 12
+2023-01-22 13:55:12,836 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,836 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 12
+2023-01-22 13:55:12,836 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,836 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 12
+2023-01-22 13:55:12,836 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 13
+2023-01-22 13:55:12,836 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,836 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 13
+2023-01-22 13:55:12,836 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,836 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 13
+2023-01-22 13:55:12,845 INFO    SenderThread:10488 [sender.py:transition_state():585] send defer: 14
+2023-01-22 13:55:12,847 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: defer
+2023-01-22 13:55:12,848 DEBUG   SenderThread:10488 [sender.py:send():334] send: final
+2023-01-22 13:55:12,848 INFO    HandlerThread:10488 [handler.py:handle_request_defer():170] handle defer: 14
+2023-01-22 13:55:12,850 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: defer
+2023-01-22 13:55:12,850 INFO    SenderThread:10488 [sender.py:send_request_defer():581] handle sender defer: 14
+2023-01-22 13:55:12,852 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: poll_exit
+2023-01-22 13:55:12,852 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: poll_exit
+2023-01-22 13:55:12,852 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: poll_exit
+2023-01-22 13:55:12,852 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: server_info
+2023-01-22 13:55:12,852 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: poll_exit
+2023-01-22 13:55:12,852 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: get_summary
+2023-01-22 13:55:12,856 DEBUG   SenderThread:10488 [sender.py:send_request():361] send_request: server_info
+2023-01-22 13:55:12,856 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: sampled_history
+2023-01-22 13:55:12,858 INFO    MainThread:10488 [wandb_run.py:_footer_history_summary_info():3427] rendering history
+2023-01-22 13:55:12,858 INFO    MainThread:10488 [wandb_run.py:_footer_history_summary_info():3459] rendering summary
+2023-01-22 13:55:12,862 DEBUG   HandlerThread:10488 [handler.py:handle_request():144] handle_request: shutdown
+2023-01-22 13:55:12,862 INFO    HandlerThread:10488 [handler.py:finish():841] shutting down handler
+2023-01-22 13:55:13,860 INFO    SenderThread:10488 [sender.py:finish():1491] shutting down sender
+2023-01-22 13:55:13,860 INFO    WriterThread:10488 [datastore.py:close():299] close: C:\Users\GILLES\Documents\Gontran\__SorbonneUniversité\__M2\S3\PFE\on-policy\onpolicy\scripts\results\MPE\simple_spread\mappo\check\wandb\offline-run-20230122_135418-drdcq2d9\run-drdcq2d9.wandb

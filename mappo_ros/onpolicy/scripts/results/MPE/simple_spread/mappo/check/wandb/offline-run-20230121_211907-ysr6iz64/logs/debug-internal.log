@@ -1,0 +1,79 @@
+2023-01-21 21:19:07,680 INFO    StreamThr :17380 [internal.py:wandb_internal():90] W&B internal server running at pid: 17380, started at: 2023-01-21 21:19:07.680859
+2023-01-21 21:19:07,688 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status
+2023-01-21 21:19:08,424 INFO    WriterThread:17380 [datastore.py:open_for_write():85] open: C:\Users\GILLES\Documents\Gontran\__SorbonneUniversité\__M2\S3\PFE\on-policy\onpolicy\scripts\results\MPE\simple_spread\mappo\check\wandb\offline-run-20230121_211907-ysr6iz64\run-ysr6iz64.wandb
+2023-01-21 21:19:08,594 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: run_start
+2023-01-21 21:19:08,698 DEBUG   HandlerThread:17380 [system_info.py:__init__():31] System info init
+2023-01-21 21:19:08,706 DEBUG   HandlerThread:17380 [system_info.py:__init__():46] System info init done
+2023-01-21 21:19:08,706 INFO    HandlerThread:17380 [system_monitor.py:start():151] Starting system monitor
+2023-01-21 21:19:08,706 INFO    SystemMonitor:17380 [system_monitor.py:_start():116] Starting system asset monitoring threads
+2023-01-21 21:19:08,706 INFO    HandlerThread:17380 [system_monitor.py:probe():172] Collecting system info
+2023-01-21 21:19:08,706 INFO    SystemMonitor:17380 [interfaces.py:start():168] Started cpu
+2023-01-21 21:19:08,716 DEBUG   HandlerThread:17380 [system_info.py:probe():195] Probing system
+2023-01-21 21:19:08,724 INFO    SystemMonitor:17380 [interfaces.py:start():168] Started disk
+2023-01-21 21:19:08,738 INFO    SystemMonitor:17380 [interfaces.py:start():168] Started memory
+2023-01-21 21:19:08,771 INFO    SystemMonitor:17380 [interfaces.py:start():168] Started network
+2023-01-21 21:19:08,827 DEBUG   HandlerThread:17380 [system_info.py:_probe_git():180] Probing git
+2023-01-21 21:19:09,118 DEBUG   HandlerThread:17380 [system_info.py:_probe_git():188] Probing git done
+2023-01-21 21:19:09,118 DEBUG   HandlerThread:17380 [system_info.py:probe():241] Probing system done
+2023-01-21 21:19:09,118 DEBUG   HandlerThread:17380 [system_monitor.py:probe():181] {'os': 'Windows-10-10.0.22621-SP0', 'python': '3.6.1', 'heartbeatAt': '2023-01-21T20:19:08.724362', 'startedAt': '2023-01-21T20:19:07.533247', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': 'train_mpe.py', 'codePath': 'onpolicy\\scripts\\train\\train_mpe.py', 'git': {'remote': 'https://github.com/marlbenchmark/on-policy.git', 'commit': '79f6591882088a0f583f7a4bcba44041141f25f5'}, 'email': 'gontran.gilles@gmail.com', 'root': 'C:/Users/GILLES/Documents/Gontran/__SorbonneUniversité/__M2/S3/PFE/on-policy', 'host': 'LAPTOP-SAK006J7', 'username': 'GILLES', 'executable': 'C:\\Users\\GILLES\\anaconda3\\envs\\marl\\python.exe', 'cpu_count': 4, 'cpu_count_logical': 8, 'cpu_freq': {'current': 1500.0, 'min': 0.0, 'max': 1800.0}, 'cpu_freq_per_core': [{'current': 1500.0, 'min': 0.0, 'max': 1800.0}], 'disk': {'total': 219.74054336547852, 'used': 198.77141571044922}, 'memory': {'total': 7.81884765625}}
+2023-01-21 21:19:09,118 INFO    HandlerThread:17380 [system_monitor.py:probe():182] Finished collecting system info
+2023-01-21 21:19:09,118 INFO    HandlerThread:17380 [system_monitor.py:probe():185] Publishing system info
+2023-01-21 21:19:09,118 DEBUG   HandlerThread:17380 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2023-01-21 21:19:09,118 DEBUG   HandlerThread:17380 [system_info.py:_save_pip():67] Saving pip packages done
+2023-01-21 21:19:09,125 DEBUG   HandlerThread:17380 [system_info.py:_save_conda():75] Saving list of conda packages installed into the current environment
+2023-01-21 21:19:09,126 ERROR   HandlerThread:17380 [system_info.py:_save_conda():85] Error saving conda packages: [WinError 2] Le fichier spécifié est introuvable
+Traceback (most recent call last):
+  File "C:\Users\GILLES\anaconda3\envs\marl\lib\site-packages\wandb\sdk\internal\system\system_info.py", line 82, in _save_conda
+    ["conda", "env", "export"], stdout=f, stderr=subprocess.DEVNULL
+  File "C:\Users\GILLES\anaconda3\envs\marl\lib\subprocess.py", line 267, in call
+    with Popen(*popenargs, **kwargs) as p:
+  File "C:\Users\GILLES\anaconda3\envs\marl\lib\subprocess.py", line 707, in __init__
+    restore_signals, start_new_session)
+  File "C:\Users\GILLES\anaconda3\envs\marl\lib\subprocess.py", line 990, in _execute_child
+    startupinfo)
+FileNotFoundError: [WinError 2] Le fichier spécifié est introuvable
+2023-01-21 21:19:09,134 DEBUG   HandlerThread:17380 [system_info.py:_save_conda():86] Saving conda packages done
+2023-01-21 21:19:09,143 INFO    HandlerThread:17380 [system_monitor.py:probe():187] Finished publishing system info
+2023-01-21 21:19:12,746 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:19:12,746 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:19:17,780 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:19:17,780 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:19:22,826 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:19:22,828 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:19:27,876 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:19:27,876 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:19:32,910 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:19:32,910 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:19:37,955 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:19:37,955 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:19:42,994 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:19:42,994 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:19:48,023 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:19:48,023 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:19:53,111 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:19:53,111 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:19:58,145 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:19:58,145 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:03,183 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:03,183 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:08,236 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:08,237 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:08,807 DEBUG   SystemMonitor:17380 [system_monitor.py:_start():130] Starting system metrics aggregation loop
+2023-01-21 21:20:13,282 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:13,282 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:18,313 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:18,316 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:23,364 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:23,364 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:28,413 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:28,413 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:33,511 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:33,512 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:38,537 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:38,537 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:43,570 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:43,572 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:48,600 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:48,600 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
+2023-01-21 21:20:53,652 DEBUG   HandlerThread:17380 [handler.py:handle_request():144] handle_request: status_report
+2023-01-21 21:20:53,652 DEBUG   SenderThread:17380 [sender.py:send_request():361] send_request: status_report
