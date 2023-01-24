@@ -11,12 +11,12 @@ import time
 import numpy as np
 
 # The path is __init__.py of openai_ros, where we import the MovingCubeOneDiskWalkEnv directly
-timestep_limit_per_episode = 1000 # Can be any Value
+MAX_STEP = 1000 # Can be any Value
 
 register(
         id='DoubleBebop2Env-v0',
         entry_point='openai_ros.task_envs.bebop2.double_bebop2_task:DoubleBebop2TaskEnv',
-        max_episode_steps=timestep_limit_per_episode,
+        max_episode_steps=MAX_STEP,
     )
 
 class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
@@ -115,7 +115,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         L_roll, L_pitch, L_yaw = self.get_orientation_euler(self.L_odom.pose.pose.orientation)
         R_roll, R_pitch, R_yaw = self.get_orientation_euler(self.R_odom.pose.pose.orientation)
 
-        observation = [dist_x,dist_y,dist_z, L_speed_x, L_speed_y, L_speed_z, L_angular_z, R_speed_x, R_speed_y, R_speed_z, R_angular_z, L_roll, L_pitch, L_yaw, R_roll, R_pitch, R_yaw]
+        observation = np.array([dist_x,dist_y,dist_z, L_speed_x, L_speed_y, L_speed_z, L_angular_z, R_speed_x, R_speed_y, R_speed_z, R_angular_z, L_roll, L_pitch, L_yaw, R_roll, R_pitch, R_yaw])
         return  observation
 
 
@@ -153,7 +153,10 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         if distance > 2.5 or distance < 0.5: done = True; #print("dist")
         if dist_z > 0.4: done = True; #print("dist_z")
         if self.L_pose.position.z < 0.2 or self.R_pose.position.z < 0.2 : done = True; #print("pose_z")
-        if self.number_step > 1000: done = True
+
+
+        # Inutile, c'est déjà spécifié dans le register
+        #if self.number_step > 1000: done = True
         
 
         return done
@@ -216,12 +219,9 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
             else: 
                 reward += 50 
 
-            if self.L_pose.position.z < 0.2 or self.R_pose.position.z < 0.2 :
-                reward -= 30
-            else:
-                reward += 10
             
-            if self.number_step > 1000:
+            if self.number_step >= MAX_STEP:
+                #Dans ce cas on aura fini l'épiosde sans acro
                 reward += 200
 
         return reward
