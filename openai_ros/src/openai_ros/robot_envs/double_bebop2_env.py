@@ -350,7 +350,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
             self.R_cmd_pub.publish(cmd)
             rospy.logdebug("R_bebop2 cmd_vel published")
 
-        elif name == "L_bebop2" or "both":
+        if name == "L_bebop2" or "both":
             self.check_publisher(self.L_cmd_pub)
             self.L_cmd_pub.publish(cmd)
             rospy.logdebug("L_bebop2 cmd_vel published")
