@@ -117,8 +117,8 @@ class ParrotDroneGotoEnv(parrotdrone_env.ParrotDroneEnv):
 
     def _set_init_pose(self):
         """
-        Sets the Robot in its init linear and angular speeds
-        and lands the robot. Its preparing it to be reseted in the world.
+        Sets  the Robot in its init linear and angular speeds
+        and lands the robot. Its preparingit to be reseted in the world.
         """
         #raw_input("INIT SPEED PRESS")
         self.move_base(self.init_linear_speed_vector,

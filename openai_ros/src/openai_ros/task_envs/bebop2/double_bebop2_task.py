@@ -8,6 +8,7 @@ from geometry_msgs.msg import Vector3, Pose
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 import time
+import numpy as np
 
 # The path is __init__.py of openai_ros, where we import the MovingCubeOneDiskWalkEnv directly
 timestep_limit_per_episode = 1000 # Can be any Value
@@ -71,6 +72,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         :return:
         """
         self.takeoff()
+        self.number_step = 0
         self.cumulated_reward = 0
 
 
@@ -83,6 +85,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         """
         lin_x, lin_y, lin_z, ang_z = action
         self.publish_cmd("R_bebop2",lin_x,lin_y,lin_z,ang_z)
+        self.number_step += 1
         
 
     def _get_obs(self):
@@ -118,44 +121,104 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
 
 
-
-
-
-
     def _is_done(self, observations):
         """
         Decide if episode is done based on the observations
         
         L'episode se finit si: 
         -   l'un des drones se retourne.
-        -   la distance devient trop élevée ou trop basse entre les deux drones
-
+        -   les drones sont trop éloignés ou trop proche
+        -   le drone a fait un bon nombre de step sans perdre
         """
         done = False
-        # Check if one of the two UAV is upside down
-        # L_roll = observations[10]
-        # L_pitch = observations[11]
 
-        # R_roll = observations[13]
-        # R_pitch = observations[14]
+        #Check if one of the two UAV is upside down
+        L_roll = observations[11]
+        L_pitch = observations[12]
 
-        # if L_pitch > 1.57 or L_roll > 1.57:
-        #     rospy.logwarn("L'un des drones s'est retourné")
-        #     done = True
+        R_roll = observations[14]
+        R_pitch = observations[15]
 
+        if abs(L_pitch) >= 1.57 or abs(L_roll) >= 1.57:
+            rospy.logwarn("Le L_bebop s'est retourné")
+            done = True
+
+        if abs(R_pitch) >= 1.57 or abs(R_roll) >= 1.57:
+            rospy.logwarn("Le R_bebop s'est retourné")
+            done = True
+        
+        # Check the distance between the drone
+        dist_x, dist_y, dist_z = observations[0:3]
+        distance = self.compute_dist(dist_x, dist_y)
+
+        if distance > 2.5 or distance < 0.5: done = True
+        if dist_z > 0.4: done = True
+        if self.number_step > 1000: done = True
 
         return done
+    
 
     def _compute_reward(self, observations, done):
+        """ On veut que les drones soient synchronisé avec un espace de 1 metre entre eux
+            Par la suite on voudra aussi que le drones esquives les obstacles (pas pour l'instant)
+        On utilisera une reward linéiar en fonction de la distance entre les drones
         """
-        Return the reward based on the observations given
-        """
+        L_roll = observations[11]
+        L_pitch = observations[12]
+
+        R_roll = observations[14]
+        R_pitch = observations[15]
+
+        dist_x, dist_y, dist_z = observations[0:3]
+        distance = self.compute_dist(dist_x, dist_y)
         reward = 0
+        
+        if not done: 
+            if abs(1 - distance) < 0.1: 
+                reward += 5
+            elif distance > 1:
+                #Pourcentage
+                reward += -15*(distance - 1)/1.5
+                assert reward <= 0
+                
+            elif distance < 1:
+                # Pourcentage 
+                reward += -30*(distance - 0.5)/0.5
+                assert reward <= 0
+            if dist_z > 0.1:
+                reward -= 3 
+            else: reward +=3
+        
+        else:
+            if distance < 0.5:
+                # Si l'episode se termine acvec les drones trop proche (pret a se cogner)
+                reward += -100
+            elif distance > 2.5:
+                # Si les drones se sont trop éloigné
+                reward += -50
+            else:
+                reward += 50
+            
+            if dist_z > 0.4:
+                reward -= 20
+            
+
+            if abs(L_pitch) >= 1.57 or abs(L_roll) >= 1.57 or abs(R_pitch) >= 1.57 or abs(R_roll) >= 1.57:
+                reward += -50
+            else: 
+                reward += 10 
+            
+            if self.number_step > 1000:
+                reward += 200
+
+        self.cumulated_reward += reward
         return reward
         
     # Internal TaskEnv Methods
 
 
+    def compute_dist(self,dist_x, dist_y):
+        return (dist_x**2 + dist_y **2)**0.5
 
 
     def get_orientation_euler(self, quaternion_vector):

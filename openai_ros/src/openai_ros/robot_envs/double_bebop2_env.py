@@ -346,13 +346,17 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         cmd.angular.z = ang_z
 
         if name == "R_bebop2" or "both":
+            self.check_publisher(self.R_cmd_pub)
             self.R_cmd_pub.publish(cmd)
             rospy.logdebug("R_bebop2 cmd_vel published")
+
         elif name == "L_bebop2" or "both":
+            self.check_publisher(self.L_cmd_pub)
             self.L_cmd_pub.publish(cmd)
             rospy.logdebug("L_bebop2 cmd_vel published")
         
         # peut etre est il nécessaire d'attendre un peu ici
+        time.sleep(0.1)
         
 
 

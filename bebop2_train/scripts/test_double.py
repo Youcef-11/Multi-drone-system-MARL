@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import gym
-import numpy
+import numpy as np 
 import time
 from gym import wrappers
 # ROS packages required
@@ -19,13 +19,9 @@ if __name__ == '__main__':
     rospy.logwarn("GYM ENVIRONMENT DONE")
 
     env.reset()
-    env.reset()
-    env.reset()
-    env.reset()
-    env.reset()
-    env.reset()
-    env.reset()
-
+    action = np.random.uniform(-1,1, 4)
+    for i in range(1000):
+        newt_state, reward,done, info = env.step(action)
 
 
     env.close()
