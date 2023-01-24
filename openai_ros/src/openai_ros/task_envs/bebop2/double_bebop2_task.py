@@ -154,6 +154,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         if distance > 2.5 or distance < 0.5: done = True
         if dist_z > 0.4: done = True
         if self.number_step > 1000: done = True
+        if self.L_pose.position.z < 0.5 or self.R_pose.position.z < 0.5 : done = True
 
         return done
     

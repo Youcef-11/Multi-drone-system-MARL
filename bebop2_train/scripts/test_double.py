@@ -13,7 +13,7 @@ from openai_ros.task_envs.bebop2 import double_bebop2_task
 if __name__ == '__main__':
 
     # , log_level=rospy.WARN
-    rospy.init_node('double_bebop_train', log_level=rospy.WARN)
+    rospy.init_node('double_bebop_train', log_level=rospy.DEBUG)
 
     # Create the Gym environment
     env = gym.make('DoubleBebop2Env-v0')
