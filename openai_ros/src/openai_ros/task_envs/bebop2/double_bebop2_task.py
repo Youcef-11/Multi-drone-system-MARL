@@ -73,7 +73,6 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         """
         self.takeoff()
         self.number_step = 0
-        self.cumulated_reward = 0
 
 
     def _set_action(self, action):
@@ -151,10 +150,11 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         dist_x, dist_y, dist_z = observations[0:3]
         distance = self.compute_dist(dist_x, dist_y)
 
-        if distance > 2.5 or distance < 0.5: done = True
-        if dist_z > 0.4: done = True
+        if distance > 2.5 or distance < 0.5: done = True; #print("dist")
+        if dist_z > 0.4: done = True; #print("dist_z")
+        if self.L_pose.position.z < 0.2 or self.R_pose.position.z < 0.2 : done = True; #print("pose_z")
         if self.number_step > 1000: done = True
-        if self.L_pose.position.z < 0.5 or self.R_pose.position.z < 0.5 : done = True
+        
 
         return done
     
@@ -179,40 +179,51 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
                 reward += 5
             elif distance > 1:
                 #Pourcentage
-                reward += -15*(distance - 1)/1.5
-                assert reward <= 0
+                reward += -100*(distance - 1)/1.5
+                # assert reward <= 0
                 
             elif distance < 1:
                 # Pourcentage 
-                reward += -30*(distance - 0.5)/0.5
-                assert reward <= 0
+                reward += -300*(distance - 0.5)/0.5
+                # assert reward <= 0
+
             if dist_z > 0.1:
-                reward -= 3 
+                reward -= 30 
             else: reward +=3
+
+            if self.L_pose.position.z < 0.2 or self.R_pose.position.z < 0.2 :
+                reward -= 30
+            else:
+                reward += 3
+
         
         else:
             if distance < 0.5:
                 # Si l'episode se termine acvec les drones trop proche (pret a se cogner)
-                reward += -100
+                reward += -500
             elif distance > 2.5:
                 # Si les drones se sont trop éloigné
-                reward += -50
+                reward += -200
             else:
                 reward += 50
             
             if dist_z > 0.4:
-                reward -= 20
+                reward -= 50
             
 
             if abs(L_pitch) >= 1.57 or abs(L_roll) >= 1.57 or abs(R_pitch) >= 1.57 or abs(R_roll) >= 1.57:
-                reward += -50
+                reward += -500
             else: 
-                reward += 10 
+                reward += 50 
+
+            if self.L_pose.position.z < 0.2 or self.R_pose.position.z < 0.2 :
+                reward -= 30
+            else:
+                reward += 10
             
             if self.number_step > 1000:
                 reward += 200
 
-        self.cumulated_reward += reward
         return reward
         
     # Internal TaskEnv Methods

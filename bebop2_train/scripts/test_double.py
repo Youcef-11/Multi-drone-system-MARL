@@ -13,7 +13,7 @@ from openai_ros.task_envs.bebop2 import double_bebop2_task
 if __name__ == '__main__':
 
     # , log_level=rospy.WARN
-    rospy.init_node('double_bebop_train', log_level=rospy.DEBUG)
+    rospy.init_node('double_bebop_train')
 
     # Create the Gym environment
     env = gym.make('DoubleBebop2Env-v0')
@@ -29,7 +29,7 @@ if __name__ == '__main__':
         # Run the environment for 1000 steps
         for _ in range(1000):
             # Choose a random action
-            action = np.random.uniform(-1,1, 4)
+            action = np.random.uniform(-1,1, 8)
 
             # Take the action and observe the result
             observation, reward, done, info = env.step(action)
