@@ -139,18 +139,18 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         R_pitch = observations[15]
 
         if abs(L_pitch) >= 1.57 or abs(L_roll) >= 1.57:
-            rospy.logwarn("Le L_bebop s'est retourné")
+            rospy.logdebug("Le L_bebop s'est retourné")
             done = True
 
         if abs(R_pitch) >= 1.57 or abs(R_roll) >= 1.57:
-            rospy.logwarn("Le R_bebop s'est retourné")
+            rospy.logdebug("Le R_bebop s'est retourné")
             done = True
         
         # Check the distance between the drone
         dist_x, dist_y, dist_z = observations[0:3]
         distance = self.compute_dist(dist_x, dist_y)
 
-        if distance > 2.5 or distance < 0.5: done = True; #print("dist")
+        if distance > 1.5 or distance < 0.5: done = True; #print("dist")
         if dist_z > 0.4: done = True; #print("dist_z")
         if self.L_pose.position.z < 0.2 or self.R_pose.position.z < 0.2 : done = True; #print("pose_z")
 
@@ -179,50 +179,50 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         
         if not done: 
             if abs(1 - distance) < 0.1: 
-                reward += 5
+                reward += 50
             elif distance > 1:
                 #Pourcentage
-                reward += -100*(distance - 1)/1.5
+                reward += -1000*(distance - 1)/0.5
                 # assert reward <= 0
                 
             elif distance < 1:
                 # Pourcentage 
-                reward += -300*(distance - 0.5)/0.5
+                reward += -3000*(distance - 0.5)/0.5
                 # assert reward <= 0
 
             if dist_z > 0.1:
-                reward -= 30 
-            else: reward +=3
+                reward -= 300 
+            else: reward +=30
 
-            if self.L_pose.position.z < 0.2 or self.R_pose.position.z < 0.2 :
-                reward -= 30
-            else:
-                reward += 3
+            # if self.L_pose.position.z < 0.2 or self.R_pose.position.z < 0.2 :
+            #     reward -= 30
+            # else:
+            #     reward += 3
 
         
         else:
             if distance < 0.5:
                 # Si l'episode se termine acvec les drones trop proche (pret a se cogner)
-                reward += -500
-            elif distance > 2.5:
+                reward += -5000
+            elif distance > 1.5:
                 # Si les drones se sont trop éloigné
-                reward += -200
+                reward += -2000
             else:
-                reward += 50
+                reward += 100
             
             if dist_z > 0.4:
-                reward -= 50
+                reward -= 500
             
 
             if abs(L_pitch) >= 1.57 or abs(L_roll) >= 1.57 or abs(R_pitch) >= 1.57 or abs(R_roll) >= 1.57:
-                reward += -500
+                reward += -5000
             else: 
                 reward += 50 
 
             
             if self.number_step >= MAX_STEP:
                 #Dans ce cas on aura fini l'épiosde sans acro
-                reward += 200
+                reward += 1000
 
         return reward
         

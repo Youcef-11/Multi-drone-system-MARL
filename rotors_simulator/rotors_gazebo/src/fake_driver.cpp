@@ -164,7 +164,7 @@ void TakeoffCallback(const std_msgs::Empty& msg)
   emergency = false;
   land = false;
   start = true;
-  ROS_INFO("TAKEOFF");
+  // ROS_INFO("TAKEOFF");
 }
 
 void MoveCallback(const geometry_msgs::Twist& msg){

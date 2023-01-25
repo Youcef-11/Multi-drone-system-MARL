@@ -81,15 +81,15 @@ class GazeboConnection():
         systems.
         """
         if self.reset_world_or_sim == "SIMULATION":
-            rospy.logerr("SIMULATION RESET")
+            rospy.logdebug("SIMULATION RESET")
             self.resetSimulation()
         elif self.reset_world_or_sim == "WORLD":
-            rospy.logerr("WORLD RESET")
+            rospy.logdebug("WORLD RESET")
             self.resetWorld()
         elif self.reset_world_or_sim == "NO_RESET_SIM":
-            rospy.logerr("NO RESET SIMULATION SELECTED")
+            rospy.logdebug("NO RESET SIMULATION SELECTED")
         else:
-            rospy.logerr("WRONG Reset Option:"+str(self.reset_world_or_sim))
+            rospy.logdebug("WRONG Reset Option:"+str(self.reset_world_or_sim))
 
     def resetSimulation(self):
         rospy.wait_for_service('/gazebo/reset_simulation')

@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     # Create the Gym environment
     env = gym.make('Bebop2Env-v0')
-    rospy.logwarn("GYM ENVIRONMENT DONE")
+    rospy.logdebug("GYM ENVIRONMENT DONE")
 
     env.reset()
 

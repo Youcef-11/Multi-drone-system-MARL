@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     # Create the Gym environment
     env = gym.make('DoubleBebop2Env-v0')
-    rospy.logwarn("GYM ENVIRONMENT DONE")
+    rospy.logdebug("GYM ENVIRONMENT DONE")
 
 
     # Run the environment for 100 episodes

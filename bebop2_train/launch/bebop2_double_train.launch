@@ -1,4 +1,4 @@
 <launch>
-  <node name="double_bebop_train" pkg="bebop2_train" type="test_double.py" output="screen">
+  <node name="double_bebop_train" pkg="bebop2_train" type="train_double_bebop.py" output="screen">
   </node>
 </launch>

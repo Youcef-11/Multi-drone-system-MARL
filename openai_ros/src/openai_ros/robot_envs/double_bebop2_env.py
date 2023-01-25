@@ -60,7 +60,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
 
         # Publishers
-        rospy.logwarn("Finished subscribing")
+        rospy.logdebug("Finished subscribing")
         self.L_cmd_pub = rospy.Publisher(self.L_cmd_vel_name, Twist, queue_size=1)
         self.L_land_pub = rospy.Publisher(self.L_land_name, Empty, queue_size=1)
         self.L_takeoff_pub = rospy.Publisher(self.L_takeoff_name, Empty, queue_size=1)
@@ -74,7 +74,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
         self._check_all_pub_ready()
 
-        rospy.logwarn("checked_allpub")
+        rospy.logdebug("checked_allpub")
         # On met en pause la simulation, c'est maintenant a la task de prendre le relai
         self.gazebo.pauseSim()
 
@@ -330,10 +330,10 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
                     takeoff_height_achieved = (L_current_height >= heigh_value_to_check) and (R_current_height >= heigh_value_to_check)
 
             if takeoff_height_achieved:
-                rospy.logwarn("Reached Height!")
+                rospy.logdebug("Reached Height!")
                 end_wait_time = rospy.get_rostime().to_sec()
                 break
-            rospy.logwarn("Height Not there yet, keep waiting...")
+            rospy.logdebug("Height Not there yet, keep waiting...")
             rate.sleep()
 
 

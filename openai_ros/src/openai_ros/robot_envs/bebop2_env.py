@@ -42,14 +42,14 @@ class Bebop2env(robot_gazebo_env.RobotGazeboEnv):
 
 
         # Publishers
-        rospy.logwarn("Finished subscribing")
+        rospy.logdebug("Finished subscribing")
         self.cmd_pub = rospy.Publisher(self.cmd_vel_name, Twist, queue_size=1)
         self.land_pub = rospy.Publisher(self.land_name, Empty, queue_size=1)
         self.takeoff_pub = rospy.Publisher(self.takeoff_name, Empty, queue_size=1)
 
         self._check_all_pub_ready()
 
-        rospy.logwarn("checked_allpub")
+        rospy.logdebug("checked_allpub")
         # On met en pause la simulation, c'est maintenant a la task de prendre le relai
         self.gazebo.pauseSim()
 
@@ -195,18 +195,18 @@ class Bebop2env(robot_gazebo_env.RobotGazeboEnv):
 
             if smaller_than:
                 takeoff_height_achieved = current_height <= heigh_value_to_check
-                rospy.logwarn("SMALLER THAN HEIGHT...current_height=" +
+                rospy.logdebug("SMALLER THAN HEIGHT...current_height=" +
                               str(current_height)+"<="+str(heigh_value_to_check))
             else:
                 takeoff_height_achieved = current_height >= heigh_value_to_check
-                rospy.logwarn("BIGGER THAN HEIGHT...current_height=" +
+                rospy.logdebug("BIGGER THAN HEIGHT...current_height=" +
                               str(current_height)+">="+str(heigh_value_to_check))
 
             if takeoff_height_achieved:
-                rospy.logwarn("Reached Height!")
+                rospy.logdebug("Reached Height!")
                 end_wait_time = rospy.get_rostime().to_sec()
                 break
-            rospy.logwarn("Height Not there yet, keep waiting...")
+            rospy.logdebug("Height Not there yet, keep waiting...")
             rate.sleep()
 
 

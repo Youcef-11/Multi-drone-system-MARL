@@ -21,16 +21,16 @@ def StartOpenAI_ROS_Environment(task_and_robot_environment_name):
     4) Launches the world launch and the robot spawn.
     5) It will import the Gym Env and Make it.
     """
-    rospy.logwarn("Env: {} will be imported".format(
+    rospy.logdebug("Env: {} will be imported".format(
         task_and_robot_environment_name))
     result = RegisterOpenAI_Ros_Env(task_env=task_and_robot_environment_name,
                                     max_episode_steps=10000)
 
     if result:
-        rospy.logwarn("Register of Task Env went OK, lets make the env..."+str(task_and_robot_environment_name))
+        rospy.logdebug("Register of Task Env went OK, lets make the env..."+str(task_and_robot_environment_name))
         env = gym.make(task_and_robot_environment_name)
     else:
-        rospy.logwarn("Something Went wrong in the register")
+        rospy.logdebug("Something Went wrong in the register")
         env = None
 
     return env
@@ -49,7 +49,7 @@ class ROSLauncher(object):
             pkg_path = self.rospack.get_path(rospackage_name)
             rospy.logdebug("Package FOUND...")
         except rospkg.common.ResourceNotFound:
-            rospy.logwarn("Package NOT FOUND, lets Download it...")
+            rospy.logdebug("Package NOT FOUND, lets Download it...")
             pkg_path = self.DownloadRepo(package_name=rospackage_name,
                                          ros_ws_abspath=ros_ws_abspath)
 
@@ -58,7 +58,7 @@ class ROSLauncher(object):
         if ros_ws_abspath in pkg_path:
             rospy.logdebug("Package FOUND in the correct WS!")
         else:
-            rospy.logwarn("Package FOUND in "+pkg_path +
+            rospy.logdebug("Package FOUND in "+pkg_path +
                           ", BUT not in the ws="+ros_ws_abspath+", lets Download it...")
             pkg_path = self.DownloadRepo(package_name=rospackage_name,
                                          ros_ws_abspath=ros_ws_abspath)
@@ -70,12 +70,12 @@ class ROSLauncher(object):
             launch_dir = os.path.join(pkg_path, "launch")
             path_launch_file_name = os.path.join(launch_dir, launch_file_name)
 
-            rospy.logwarn("path_launch_file_name=="+str(path_launch_file_name))
+            rospy.logdebug("path_launch_file_name=="+str(path_launch_file_name))
 
             source_env_command = "source "+ros_ws_abspath+"/devel/setup.bash;"
             roslaunch_command = "roslaunch  {0} {1}".format(rospackage_name, launch_file_name)
             command = source_env_command+roslaunch_command
-            rospy.logwarn("Launching command="+str(command))
+            rospy.logdebug("Launching command="+str(command))
 
             p = subprocess.Popen(command, shell=True)
 
@@ -245,19 +245,19 @@ class ROSLauncher(object):
                     rospy.logdebug("Download git="+git_url +
                                    ", in ws="+ros_ws_src_abspath_src+"...DONE")
                 except git.exc.GitCommandError as e:
-                    rospy.logwarn(str(e))
-                    rospy.logwarn("The Git "+git_url+" already exists in " +
+                    rospy.logdebug(str(e))
+                    rospy.logdebug("The Git "+git_url+" already exists in " +
                                   ros_ws_src_abspath_src+", not downloading")
 
             # We check that the package is there
             try:
                 pkg_path = self.rospack.get_path(package_name)
-                rospy.logwarn("The package "+package_name+" was FOUND by ROS.")
+                rospy.logdebug("The package "+package_name+" was FOUND by ROS.")
 
                 if ros_ws_abspath in pkg_path:
                     rospy.logdebug("Package FOUND in the correct WS!")
                 else:
-                    rospy.logwarn("Package FOUND in="+pkg_path +
+                    rospy.logdebug("Package FOUND in="+pkg_path +
                                   ", BUT not in the ws="+ros_ws_abspath)
                     rospy.logerr(
                         "IMPORTANT!: You need to execute the following commands and rerun to dowloads to take effect.")
