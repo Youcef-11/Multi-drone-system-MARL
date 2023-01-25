@@ -61,8 +61,8 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
         # Publishers
         rospy.logdebug("Finished subscribing")
-        self.L_cmd_pub = rospy.Publisher(self.L_cmd_vel_name, Twist, queue_size=1)
-        self.L_land_pub = rospy.Publisher(self.L_land_name, Empty, queue_size=1)
+        self.L_cmd_pub = rospy.Publisher(self.L_cmd_vel_name, Twist, queue_size=0)
+        self.L_land_pub = rospy.Publisher(self.L_land_name, Empty, queue_size=0)
         self.L_takeoff_pub = rospy.Publisher(self.L_takeoff_name, Empty, queue_size=1)
         self.L_reset_pub = rospy.Publisher(self.L_reset_name, Empty, queue_size=1)
 
@@ -345,12 +345,12 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         cmd.linear.z = lin_z
         cmd.angular.z = ang_z
 
-        if name == "R_bebop2":
+        if name == "R_bebop2" or name == "both":
             self.check_publisher(self.R_cmd_pub)
             self.R_cmd_pub.publish(cmd)
             rospy.logdebug("R_bebop2 cmd_vel published")
 
-        if name == "L_bebop2":
+        if name == "L_bebop2" or name == "both":
             self.check_publisher(self.L_cmd_pub)
             self.L_cmd_pub.publish(cmd)
             rospy.logdebug("L_bebop2 cmd_vel published")

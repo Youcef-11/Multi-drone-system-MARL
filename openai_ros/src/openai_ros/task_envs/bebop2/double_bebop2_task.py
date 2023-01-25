@@ -31,7 +31,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         #parrotdrone_goto utilisait une space bos, pas nous pour l'instant.
 
         # Lancement de la simulation
-        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", ros_ws_abspath="/home/youcef/drones_ws")
+        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", ros_ws_abspath="/home/huss/Bureau/Documents/cat_ws")
         
         # Paramètres
         self.linear_forward_speed = rospy.get_param( '/bebop2/linear_forward_speed')

@@ -277,8 +277,9 @@ class PPOAgent:
             for t in range(self.Training_batch):
                 # Actor picks an action
                 action, logp_t = self.act(state)
+                print(t)
                 # Retrieve new state, reward, and whether the state is terminal
-                next_state, reward, done, _ = self.env.step(action[0]) # Check why we take just action[0] ?????
+                next_state, reward, done, _ = self.env.step(action[0]) 
                 # Memorize (state, next_states, action, reward, done, logp_ts) for training
                 states.append(state)
                 next_states.append(np.reshape(next_state, [1, self.state_size[0]]))
@@ -298,6 +299,7 @@ class PPOAgent:
                     self.writer.add_scalar(f'Workers:{1}/average_score',  average, self.episode)
                     
                     state, done, score, SAVING = self.env.reset(), False, 0, ''
+                    self.env.reset()
                     state = np.reshape(state, [1, self.state_size[0]])
 
             self.replay(states, actions, rewards, dones, next_states, logp_ts)

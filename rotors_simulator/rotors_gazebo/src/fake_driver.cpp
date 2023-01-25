@@ -134,6 +134,7 @@ void traj_callback(
 
 void reset_pose_callback(const std_msgs::Empty& msg){
   // On créer un topic pour reset init_pose_set. Sans ca, lors du reset world, le drone voudra retourenr a sa position avant le reset
+
   emergency = true;
   takeoff = false;
   start = false;
@@ -323,7 +324,7 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
                                       sin(init_yaw) * pitch + cos(init_yaw) * roll, 
                                       thrust);
 
-
+    std::cout << "=======start=======" << std::endl;
 
     init_position += desired_dposition * max_vel * dt;
 
@@ -336,6 +337,15 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
 
     trajectory_msg.points[0].time_from_start = ros::Duration(1.0);
     trajectory_pub.publish(trajectory_msg);
+
+
   }
+
+  std::cout << "yaw = " << init_yaw << std::endl;
+  std::cout << "roll = " << roll << std::endl;
+  std::cout << "pitch = " << pitch << std::endl;
+
+  std::cout << "Desired position = " << cos(init_yaw) * pitch - sin(init_yaw) * roll << ", " << sin(init_yaw) * pitch + cos(init_yaw) * roll << ", " << thrust << std::endl;
+
 }
 
