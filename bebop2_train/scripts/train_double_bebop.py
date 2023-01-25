@@ -405,7 +405,6 @@ if __name__ == "__main__":
     # Create the Gym environment
     rospy.logdebug("GYM ENVIRONMENT DONE")
 
-    # newest gym fixed bugs in 'BipedalWalker-v2' and now it's called 'BipedalWalker-v3'
     env_name = 'DoubleBebop2Env-v0'
     agent = PPOAgent(env_name)
     agent.run_batch() # train as PPO

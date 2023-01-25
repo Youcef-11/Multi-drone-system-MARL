@@ -9,6 +9,7 @@ from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 import time
 import numpy as np
+from pathlib import Path
 
 # The path is __init__.py of openai_ros, where we import the MovingCubeOneDiskWalkEnv directly
 MAX_STEP = 1000 # Can be any Value
@@ -23,7 +24,8 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
     def __init__(self):
 
         # On load les paramètres 
-        LoadYamlFileParamsTest(rospackage_name="openai_ros", rel_path_from_package_to_file="src/openai_ros/task_envs/bebop2/config", yaml_file_name="bebop2.yaml")       
+        LoadYamlFileParamsTest(rospackage_name="openai_ros", rel_path_from_package_to_file="src/openai_ros/task_envs/bebop2/config", 
+                               yaml_file_name="bebop2.yaml")       
 
         number_actions = rospy.get_param('/bebop2/n_actions')
         self.action_space = spaces.Discrete(number_actions)
@@ -31,7 +33,8 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         #parrotdrone_goto utilisait une space bos, pas nous pour l'instant.
 
         # Lancement de la simulation
-        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", ros_ws_abspath="/home/youcef/drones_ws")
+        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", 
+                    ros_ws_abspath=str(Path(__file__).parent.parent.parent.parent.parent.parent.parent))
         
         # Paramètres
         self.linear_forward_speed = rospy.get_param( '/bebop2/linear_forward_speed')
@@ -186,15 +189,15 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         
         if not done: 
             if abs(1 - distance) < 0.1: 
-                reward += 50
+                reward += 10
             elif distance > 1:
                 #Pourcentage
-                reward += -1000*(distance - 1)/0.5
+                reward += -100*(distance - 1)/0.5
                 # assert reward <= 0
                 
             elif distance < 1:
                 # Pourcentage 
-                reward += -3000*(distance - 0.5)/0.5
+                reward += -300*(distance - 0.5)/0.5
                 # assert reward <= 0
 
             if dist_z > 0.1:
@@ -210,22 +213,22 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         else:
             if distance < 0.5:
                 # Si l'episode se termine acvec les drones trop proche (pret a se cogner)
-                reward += -5000
+                reward += -500
             elif distance > 1.5:
                 # Si les drones se sont trop éloigné
-                reward += -2000
+                reward += -200
             else:
-                reward += 100
+                reward += 10
             
             if dist_z > 0.1:
-                reward -= 3000 
+                reward -= 300 
             else: reward +=30
             
 
             if abs(L_pitch) >= 1.57 or abs(L_roll) >= 1.57 or abs(R_pitch) >= 1.57 or abs(R_roll) >= 1.57:
-                reward += -5000
+                reward += -500
             else: 
-                reward += 50 
+                reward += 10
 
             
             if self.number_step >= MAX_STEP:
@@ -250,3 +253,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
         roll, pitch, yaw = euler_from_quaternion(orientation_list)
         return roll, pitch, yaw
+
+
+if __name__ == '__main__':
+    print(str(Path(__file__).parent.parent.parent.parent.parent.parent.parent))
