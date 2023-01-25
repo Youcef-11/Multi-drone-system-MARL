@@ -359,7 +359,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
             rospy.logdebug("L_bebop2 cmd_vel published")
         
         # peut etre est il nécessaire d'attendre un peu ici
-        # time.sleep(0.1)
+        rospy.sleep(0.1)
         
 
 
