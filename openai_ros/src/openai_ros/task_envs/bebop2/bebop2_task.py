@@ -5,6 +5,7 @@ from gym.envs.registration import register
 from openai_ros.task_envs.task_commons import LoadYamlFileParamsTest
 import rospy
 from geometry_msgs.msg import Vector3
+from pathlib import Path
 
 # The path is __init__.py of openai_ros, where we import the MovingCubeOneDiskWalkEnv directly
 timestep_limit_per_episode = 1000 # Can be any Value
@@ -27,13 +28,9 @@ class Bebop2TaskEnv(bebop2_env.Bebop2env):
         #parrotdrone_goto utilisait une space bos, pas nous pour l'instant.
 
         # Lancement de la simulation
-<<<<<<< Updated upstream
         ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_1_bebop.launch",
                     ros_ws_abspath=str(Path(__file__).parent.parent.parent.parent.parent.parent.parent))
-=======
-        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_1_bebop.launch", ros_ws_abspath="/home/huss/Bureau/Documents/cat_ws")
->>>>>>> Stashed changes
-        
+
         # Paramètres
         self.linear_forward_speed = rospy.get_param( '/bebop2/linear_forward_speed')
         self.angular_turn_speed = rospy.get_param('/bebop2/angular_turn_speed')

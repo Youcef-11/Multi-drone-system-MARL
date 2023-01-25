@@ -33,12 +33,8 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         #parrotdrone_goto utilisait une space bos, pas nous pour l'instant.
 
         # Lancement de la simulation
-<<<<<<< Updated upstream
         ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", 
                     ros_ws_abspath=str(Path(__file__).parent.parent.parent.parent.parent.parent.parent))
-=======
-        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", ros_ws_abspath="/home/huss/Bureau/Documents/cat_ws")
->>>>>>> Stashed changes
         
         # Paramètres
         self.linear_forward_speed = rospy.get_param( '/bebop2/linear_forward_speed')
@@ -167,12 +163,15 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
         if distance > 1.5 or distance < 0.5: done = True; #print("dist")
         if dist_z > 0.2: done = True; #print("dist_z")
-        if self.L_pose.position.z < 0.2 or self.R_pose.position.z < 0.2 : done = True; #print("pose_z")
+        if self.L_odom.pose.pose.position.z < 0.2 or self.R_odom.pose.pose.position.z < 0.2 : done = True; #print("pose_z")
 
 
         # Inutile, c'est déjà spécifié dans le register
         #if self.number_step > 1000: done = True
+        if not done:
+            self.do_hasardous_move()
         
+
 
         return done
     
@@ -259,9 +258,3 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         roll, pitch, yaw = euler_from_quaternion(orientation_list)
         return roll, pitch, yaw
 
-
-<<<<<<< Updated upstream
-if __name__ == '__main__':
-    print(str(Path(__file__).parent.parent.parent.parent.parent.parent.parent))
-=======
->>>>>>> Stashed changes

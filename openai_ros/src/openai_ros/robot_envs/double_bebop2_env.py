@@ -329,7 +329,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
 
 
-    def do_hasardous_move(self, min_altitude = 0.3, stop_chance = 5):
+    def do_hasardous_move(self, min_altitude = 0.5, stop_chance = 0.5):
         """Avec stop_chance %  de chance, le leader s'arrête pendant 3s
         Sinon, il choisis une action au hasard en faisant attention a ne pas passer en dessous de l'altitude 'min_altitude'
         """
@@ -337,6 +337,8 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         cmd = Twist()
         if rospy.get_rostime().to_sec() < self.stop_until:
             self.L_cmd_pub.publish(cmd)
+            rospy.logwarn("3 seconds pause !")
+            return
 
         if np.random.uniform(0,1,1) < stop_chance/100:
             self.stop_until = rospy.get_rostime().to_sec() + 3 
@@ -347,8 +349,11 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
             cmd.linear.x = action[0]
             cmd.linear.y = action[1]
 
-            if self.pose.position.z < min_altitude and action[2] < 0:
-                cmd.linear.z = -action[2]
+            if self.L_odom.pose.pose.position.z < min_altitude and action[2] < 0:
+                cmd.linear.z = 1
+                rospy.logerr("BELEK ON SE RAPPORHCE DUSOL")
+            else:
+                cmd.linear.z = action[2]
 
             cmd.angular.z = action[3]
 

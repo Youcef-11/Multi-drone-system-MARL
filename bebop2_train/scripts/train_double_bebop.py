@@ -278,7 +278,6 @@ class PPOAgent:
             states, next_states, actions, rewards, dones, logp_ts = [], [], [], [], [], []
             for t in range(self.Training_batch):
                 # Actor picks an action
-                self.do_hasardous_move()
                 action, logp_t = self.act(state)
                 # Retrieve new state, reward, and whether the state is terminal
                 next_state, reward, done, _ = self.env.step(action[0]) 
