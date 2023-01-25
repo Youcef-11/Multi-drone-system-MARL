@@ -33,8 +33,12 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         #parrotdrone_goto utilisait une space bos, pas nous pour l'instant.
 
         # Lancement de la simulation
+<<<<<<< Updated upstream
         ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", 
                     ros_ws_abspath=str(Path(__file__).parent.parent.parent.parent.parent.parent.parent))
+=======
+        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", ros_ws_abspath="/home/huss/Bureau/Documents/cat_ws")
+>>>>>>> Stashed changes
         
         # Paramètres
         self.linear_forward_speed = rospy.get_param( '/bebop2/linear_forward_speed')
@@ -106,9 +110,10 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
         """
         # Distance
-        dist_x = abs(self.L_pose.position.x - self.R_pose.position.x)
-        dist_y = abs(self.L_pose.position.y - self.R_pose.position.y)
-        dist_z = abs(self.L_pose.position.z - self.R_pose.position.z)
+        dist_x = abs(self.L_odom.pose.pose.position.x - self.R_odom.pose.pose.position.x)
+        dist_y = abs(self.L_odom.pose.pose.position.y - self.R_odom.pose.pose.position.y)
+        dist_z = abs(self.L_odom.pose.pose.position.z - self.R_odom.pose.pose.position.z)
+
 
         # Speed
         L_speed_x = self.L_odom.twist.twist.linear.x
@@ -255,5 +260,8 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         return roll, pitch, yaw
 
 
+<<<<<<< Updated upstream
 if __name__ == '__main__':
     print(str(Path(__file__).parent.parent.parent.parent.parent.parent.parent))
+=======
+>>>>>>> Stashed changes

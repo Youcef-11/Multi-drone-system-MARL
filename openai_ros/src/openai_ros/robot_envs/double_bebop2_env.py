@@ -4,12 +4,13 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist, Pose
 from std_msgs.msg import Empty
 import rospy
-import time
+import numpy as np
 
 
 class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
     def __init__(self):
+        self.stop_until = 0
 
         # Topic names L_BEBOP
         self.L_image_name = "/L_bebop2/camera_base/image_raw"
@@ -50,13 +51,13 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
 
         # SUBSCRIBING
-        rospy.Subscriber(self.L_image_name, Image, self._L_img_cb)
+        # rospy.Subscriber(self.L_image_name, Image, self._L_img_cb)
         rospy.Subscriber(self.L_odom_name, Odometry, self._L_odom_cb)
-        rospy.Subscriber(self.L_pose_name, Pose, self._L_pose_cb)
+        # rospy.Subscriber(self.L_pose_name, Pose, self._L_pose_cb)
 
-        rospy.Subscriber(self.R_image_name, Image, self._R_img_cb)
+        # rospy.Subscriber(self.R_image_name, Image, self._R_img_cb)
         rospy.Subscriber(self.R_odom_name, Odometry, self._R_odom_cb)
-        rospy.Subscriber(self.R_pose_name, Pose, self._R_pose_cb)
+        # rospy.Subscriber(self.R_pose_name, Pose, self._R_pose_cb)
 
 
         # Publishers
@@ -70,6 +71,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         self.R_land_pub = rospy.Publisher(self.R_land_name, Empty, queue_size=1)
         self.R_takeoff_pub = rospy.Publisher(self.R_takeoff_name, Empty, queue_size=1)
         self.R_reset_pub = rospy.Publisher(self.R_reset_name, Empty, queue_size=1)
+
 
 
         self._check_all_pub_ready()
@@ -97,13 +99,13 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         return True
 
     def _check_all_sensor_ready(self):
-        self.L_image_raw = self.check_sensor(self.L_image_name, Image)
+        # self.L_image_raw = self.check_sensor(self.L_image_name, Image)
         self.L_odom = self.check_sensor(self.L_odom_name, Odometry)
-        self.L_pose = self.check_sensor(self.L_pose_name, Pose)
+        # self.L_pose = self.check_sensor(self.L_pose_name, Pose)
         
-        self.R_image_raw = self.check_sensor(self.R_image_name, Image)
+        # self.R_image_raw = self.check_sensor(self.R_image_name, Image)
         self.R_odom = self.check_sensor(self.R_odom_name, Odometry)
-        self.R_pose = self.check_sensor(self.R_pose_name, Pose)
+        # self.R_pose = self.check_sensor(self.R_pose_name, Pose)
         rospy.logdebug("ALL SENSORS READY")
     
     def _check_all_pub_ready(self):
@@ -144,25 +146,25 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
 
     #### CALLBACKS 
-    def _L_img_cb(self, data):
-        self.L_image_raw = data
+    # def _L_img_cb(self, data):
+    #     self.L_image_raw = data
 
     def _L_odom_cb(self, data):
         self.L_odom = data
 
 
 
-    def _L_pose_cb(self, data):
-        self.L_pose = data
+    # def _L_pose_cb(self, data):
+    #     self.L_pose = data
         
-    def _R_img_cb(self, data):
-        self.R_image_raw = data
+    # def _R_img_cb(self, data):
+    #     self.R_image_raw = data
 
     def _R_odom_cb(self, data):
         self.R_odom = data
 
-    def _R_pose_cb(self, data):
-        self.R_pose = data
+    # def _R_pose_cb(self, data):
+    #     self.R_pose = data
     # Methods that the TrainingEnvironment will need to define here as virtual
     # because they will be used in RobotGazeboEnv GrandParentClass and defined in the
     # TrainingEnvironment.
@@ -326,5 +328,32 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         
 
 
+
+    def do_hasardous_move(self, min_altitude = 0.3, stop_chance = 5):
+        """Avec stop_chance %  de chance, le leader s'arrête pendant 3s
+        Sinon, il choisis une action au hasard en faisant attention a ne pas passer en dessous de l'altitude 'min_altitude'
+        """
+
+        cmd = Twist()
+        if rospy.get_rostime().to_sec() < self.stop_until:
+            self.L_cmd_pub.publish(cmd)
+
+        if np.random.uniform(0,1,1) < stop_chance/100:
+            self.stop_until = rospy.get_rostime().to_sec() + 3 
+            self.L_cmd_pub.publish(cmd)
+
+        else: 
+            action = np.random.uniform(-1,1,4)
+            cmd.linear.x = action[0]
+            cmd.linear.y = action[1]
+
+            if self.pose.position.z < min_altitude and action[2] < 0:
+                cmd.linear.z = -action[2]
+
+            cmd.angular.z = action[3]
+
+            self.L_cmd_pub.publish(cmd)
+
+        
 
 
