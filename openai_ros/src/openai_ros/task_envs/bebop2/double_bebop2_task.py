@@ -161,13 +161,10 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         dist_x, dist_y, dist_z = observations[0:3]
         distance = self.compute_dist(dist_x, dist_y)
 
-        if distance > 1.5 or distance < 0.5: done = True; #print("dist")
-        if dist_z > 0.2: done = True; #print("dist_z")
-        if self.L_odom.pose.pose.position.z < 0.2 or self.R_odom.pose.pose.position.z < 0.2 : done = True; #print("pose_z")
+        if distance > 1.5 or distance < 0.5: done = True; 
+        if dist_z > 0.2: done = True; 
+        if self.L_odom.pose.pose.position.z < 0.2 or self.R_odom.pose.pose.position.z < 0.2 : done = True;
 
-
-        # Inutile, c'est déjà spécifié dans le register
-        #if self.number_step > 1000: done = True
         if not done:
             self.do_hasardous_move()
         
@@ -181,6 +178,32 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
             Par la suite on voudra aussi que le drones esquives les obstacles (pas pour l'instant)
         On utilisera une reward linéiar en fonction de la distance entre les drones
         """
+        #reward = self.reward_system1(observations, done)
+        reward = self.reward_system2(observations, done)
+
+        return reward
+        
+    # Internal TaskEnv Methods
+
+
+    def compute_dist(self,dist_x, dist_y):
+        return (dist_x**2 + dist_y **2)**0.5
+
+
+    def get_orientation_euler(self, quaternion_vector):
+        # We convert from quaternions to euler
+        orientation_list = [quaternion_vector.x,
+                            quaternion_vector.y,
+                            quaternion_vector.z,
+                            quaternion_vector.w]
+
+        roll, pitch, yaw = euler_from_quaternion(orientation_list)
+        return roll, pitch, yaw
+
+
+##### REWARD SYSTEM : 
+
+    def reward_system1(self, observations, done):
         L_roll = observations[11]
         L_pitch = observations[12]
 
@@ -238,23 +261,43 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
             if self.number_step >= MAX_STEP:
                 #Dans ce cas on aura fini l'épiosde sans acro
                 reward += 1000
-
         return reward
-        
-    # Internal TaskEnv Methods
+    
+    def system_rewards2(self, observations, done):
+
+        #end episode
+        out_reward = -200
+        too_near_reward = -300
+        bad_altitude_reward = -100
+
+        good_distance_reward = 20
+        good_altitude_reward = 10
+        step_reward = 1
 
 
-    def compute_dist(self,dist_x, dist_y):
-        return (dist_x**2 + dist_y **2)**0.5
+        dist_x, dist_y, dist_z = observations[0:3]
+        distance = self.compute_dist(dist_x, dist_y)
+        if done : 
+            if distance > 2.5:
+                return out_reward
+            if distance < 0.5:
+                return too_near_reward
+            if dist_z > 0.2:
+                return 
+
+        else:
+            reward = 0
+            if abs(distance -1 ) < 0.1:
+                reward += good_distance_reward 
+            if dist_z < 0.1: 
+                reward += good_altitude_reward
+            reward += step_reward
+            return reward
+
+            
+            
+            
 
 
-    def get_orientation_euler(self, quaternion_vector):
-        # We convert from quaternions to euler
-        orientation_list = [quaternion_vector.x,
-                            quaternion_vector.y,
-                            quaternion_vector.z,
-                            quaternion_vector.w]
 
-        roll, pitch, yaw = euler_from_quaternion(orientation_list)
-        return roll, pitch, yaw
 
