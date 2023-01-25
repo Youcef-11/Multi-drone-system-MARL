@@ -179,7 +179,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         On utilisera une reward linéiar en fonction de la distance entre les drones
         """
         #reward = self.reward_system1(observations, done)
-        reward = self.reward_system2(observations, done)
+        reward = self.system_rewards2(observations, done)
 
         return reward
         
@@ -266,31 +266,37 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
     def system_rewards2(self, observations, done):
 
         #end episode
-        out_reward = -200
+        out_reward = -100
         too_near_reward = -300
         bad_altitude_reward = -100
 
         good_distance_reward = 20
-        good_altitude_reward = 10
+        good_altitude_reward = 20
+        good_distance_reward = -10
+        good_altitude_reward = -10
         step_reward = 1
 
 
         dist_x, dist_y, dist_z = observations[0:3]
         distance = self.compute_dist(dist_x, dist_y)
         if done : 
-            if distance > 2.5:
+            if distance > 1.5:
                 return out_reward
             if distance < 0.5:
                 return too_near_reward
             if dist_z > 0.2:
-                return 
+                return bad_altitude_reward
 
         else:
             reward = 0
             if abs(distance -1 ) < 0.1:
-                reward += good_distance_reward 
+                reward += good_distance_reward
+            else : 
+                reward += good_distance_reward
             if dist_z < 0.1: 
                 reward += good_altitude_reward
+            else:
+                reward += bad_altitude_reward
             reward += step_reward
             return reward
 

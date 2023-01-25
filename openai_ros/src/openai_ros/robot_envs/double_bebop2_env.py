@@ -351,7 +351,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
             if self.L_odom.pose.pose.position.z < min_altitude and action[2] < 0:
                 cmd.linear.z = 1
-                rospy.logerr("BELEK ON SE RAPPORHCE DUSOL")
+                rospy.logwarn("Near to ground!")
             else:
                 cmd.linear.z = action[2]
 
