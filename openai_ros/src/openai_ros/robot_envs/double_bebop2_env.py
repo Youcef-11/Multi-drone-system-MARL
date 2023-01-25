@@ -301,6 +301,9 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
         rospy.logdebug("epsilon>>" + str(epsilon))
 
+        # DUR = rospy.Duration(nsecs = 1*10**(8))
+        rospy.sleep(0.2)
+
         while not rospy.is_shutdown() and start_wait_time + 4 > rospy.get_rostime().to_sec():
             if mode == "L" or "both":
                 L_current_pose = self.check_sensor(self.L_pose_name, Pose)
@@ -356,7 +359,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
             rospy.logdebug("L_bebop2 cmd_vel published")
         
         # peut etre est il nécessaire d'attendre un peu ici
-        time.sleep(0.1)
+        # time.sleep(0.1)
         
 
 

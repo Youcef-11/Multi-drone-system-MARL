@@ -38,6 +38,9 @@ bool joy_msg_ready = false;
 bool joy_enable = true;
 bool init_pose_set = false;
 
+// Cette variable permettra le reset propre de la simulation
+bool init_takeoff = true;
+
 bool start = false;
 bool move = false;
 
@@ -76,16 +79,19 @@ void reset_pose_callback(const std_msgs::Empty& msg);
 void StopMav();
 
 
+
 int main(int argc, char** argv) {
 
   ros::init(argc, argv, "fake_driver");
-  ros::NodeHandle nh("~");
 
+  ros::NodeHandle nh("~");
   // Continuously publish waypoints.
   trajectory_pub = nh.advertise<trajectory_msgs::MultiDOFJointTrajectory>(
                     mav_msgs::default_topics::COMMAND_TRAJECTORY, 100);
 
   traj_sub = nh.subscribe("command/trajectory", 1, &traj_callback);
+
+ 
 
   // Subscribe to message for enabling/disabling joystick control
   joy_enable_sub = nh.subscribe("joy_enable", 10, &joy_enable_callback);
@@ -129,16 +135,17 @@ void traj_callback(
       const trajectory_msgs::MultiDOFJointTrajectoryConstPtr& msg){
 
       loc = msg->points[0].transforms[0].translation.z;
-      //ROS_INFO("%f", loc);
+      // ROS_INFO("loc = %f", loc);
 }
 
 void reset_pose_callback(const std_msgs::Empty& msg){
   // On créer un topic pour reset init_pose_set. Sans ca, lors du reset world, le drone voudra retourenr a sa position avant le reset
 
-  emergency = true;
+  init_pose_set = false;
+  init_takeoff = false;
   takeoff = false;
   start = false;
-  init_pose_set = false;
+  land = true;
 }
 
 void StopCallback(const std_msgs::Empty& msg){
@@ -208,6 +215,8 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
 
 
   if(init_pose_set == false){
+
+   
     Eigen::Affine3d eigen_affine;
     tf::poseMsgToEigen(odom_msg.pose.pose, eigen_affine);
     init_position = eigen_affine.matrix().topRightCorner<3, 1>();
@@ -228,6 +237,25 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
     init_yaw = psi;
     init_pose_set = true;
   }  
+
+  // if (!init_takeoff && takeoff){
+  //   std::cout << "do I enter here sometimes" << std::endl;
+  //   init_yaw = 0;
+  //   linear_y = 0;
+  //   linear_x = 0;
+  //   linear_z = 0;
+  //   angular_z = 0;
+  //   init_takeoff = true;
+  //   start = true;
+  //   land = false;
+  //   emergency = false;
+  // }
+
+  //  std::cout << "=============" << std::endl;
+  //  std::cout << "start = " << start << std::endl;
+  //  std::cout << "land = " << start << std::endl;
+  //  std::cout << "takeoff = " << start << std::endl;
+  //  std::cout << "=============" << std::endl;
 
   // from joystik
   double roll = linear_y * axis_direction_roll;
@@ -297,7 +325,7 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
   }
   if (takeoff){
     static trajectory_msgs::MultiDOFJointTrajectory trajectory_msg;
-    Eigen::Vector3d desired_dposition( cos(init_yaw) * pitch - sin(init_yaw) * roll, 
+    Eigen::Vector3d desired_dposition(cos(init_yaw) * pitch - sin(init_yaw) * roll, 
                                     sin(init_yaw) * pitch + cos(init_yaw) * roll, 
                                     1.0);
     init_position += desired_dposition * max_vel * dt;
@@ -311,7 +339,11 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
 
     trajectory_msg.points[0].time_from_start = ros::Duration(0.01);
     trajectory_pub.publish(trajectory_msg);
+
+    
+
     if (loc > 1.0){
+      // std::cout << "FINISHED TAKEOFF YEAH : " << loc <<  std::endl;
       start = true;
       takeoff = false;
     }
@@ -324,7 +356,7 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
                                       sin(init_yaw) * pitch + cos(init_yaw) * roll, 
                                       thrust);
 
-    std::cout << "=======start=======" << std::endl;
+    // std::cout << "=======start=======" << std::endl;
 
     init_position += desired_dposition * max_vel * dt;
 
@@ -341,11 +373,13 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
 
   }
 
-  std::cout << "yaw = " << init_yaw << std::endl;
-  std::cout << "roll = " << roll << std::endl;
-  std::cout << "pitch = " << pitch << std::endl;
+  // std::cout << "yaw = " << init_yaw << std::endl;
+  // std::cout << "roll = " << roll << std::endl;
+  // std::cout << "pitch = " << pitch << std::endl;
 
-  std::cout << "Desired position = " << cos(init_yaw) * pitch - sin(init_yaw) * roll << ", " << sin(init_yaw) * pitch + cos(init_yaw) * roll << ", " << thrust << std::endl;
+
+
+  // std::cout << "Desired position = " << cos(init_yaw) * pitch - sin(init_yaw) * roll << ", " << sin(init_yaw) * pitch + cos(init_yaw) * roll << ", " << thrust << std::endl;
 
 }
 

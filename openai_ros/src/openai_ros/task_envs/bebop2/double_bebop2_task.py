@@ -57,11 +57,10 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         """
         # On reset cmd_vel
         self.publish_cmd("both", 0,0,0,0)
-        self.gazebo.pauseSim()
-        self.gazebo.resetSim()
-        self.gazebo.unpauseSim()
+        # self.gazebo.pauseSim()
+        # self.gazebo.resetSim()
+        # self.gazebo.unpauseSim()
         # Il est important dans notre cas de reset_pub juste apres le resest, c'est pour ca on reset (c'est pas grv si on resset 2 fois)
-        self.reset_pub()
         # il est necessaire de reset deux fois pour que cela soit pris en compte 
 
 
@@ -71,6 +70,14 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         of an episode.
         :return:
         """
+
+        # self.gazebo.pauseSim()
+        # self.gazebo.resetSim()
+        # self.gazebo.unpauseSim()
+        self.reset_pub()
+        # DUR = rospy.Duration(nsecs = 1*10**(8))
+        # rospy.sleep(DUR)
+        time.sleep(0.1)
         self.takeoff()
         self.number_step = 0
 
