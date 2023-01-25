@@ -213,8 +213,8 @@ class PPOAgent:
         y_true = np.hstack([advantages, actions, logp_ts])
         
         # training Actor and Critic networks
-        a_loss = self.Actor.Actor.fit(states, y_true, epochs=self.epochs, verbose=0, shuffle=self.shuffle)
-        c_loss = self.Critic.Critic.fit([states, values], target, epochs=self.epochs, verbose=0, shuffle=self.shuffle)
+        a_loss = self.Actor.Actor.fit(states, y_true, epochs=self.epochs, verbose=1, shuffle=self.shuffle)
+        c_loss = self.Critic.Critic.fit([states, values], target, epochs=self.epochs, verbose=1, shuffle=self.shuffle)
 
         # calculate loss parameters (should be done in loss, but couldn't find working way how to do that with disabled eager execution)
         pred = self.Actor.predict(states)
@@ -268,6 +268,8 @@ class PPOAgent:
         return self.average_[-1], SAVING
     
     def run_batch(self):
+        # Clearing the Screen
+        os.system('clear')
         state = self.env.reset()
         state = np.reshape(state, [1, self.state_size[0]])
         done, score, SAVING = False, 0, ''
@@ -292,7 +294,7 @@ class PPOAgent:
                 if done:
                     self.episode += 1
                     average, SAVING = self.PlotModel(score, self.episode)
-                    print("episode: {}/{}, score: {}, average: {:.2f} {}".format(self.episode, self.EPISODES, score, average, SAVING),end="\r")
+                    print("episode: {}/{}, score: {}, average: {:.2f} {}".format(self.episode, self.EPISODES, score, average, SAVING))
                     self.writer.add_scalar(f'Workers:{1}/score_per_episode', score, self.episode)
                     self.writer.add_scalar(f'Workers:{1}/learning_rate', self.lr, self.episode)
                     self.writer.add_scalar(f'Workers:{1}/average_score',  average, self.episode)

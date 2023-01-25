@@ -29,7 +29,7 @@ if __name__ == '__main__':
         # Run the environment for 1000 steps
         for _ in range(1000):
             # Choose a random action
-            action = np.random.uniform(-1,1, 8)
+            action = np.random.uniform(-1,1, 4)
 
             # Take the action and observe the result
             observation, reward, done, info = env.step(action)

@@ -150,19 +150,6 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
     def _L_odom_cb(self, data):
         self.L_odom = data
 
-        # Gazebo fait ce qui suit automatiquemnt, ca ne sera pas vrai dans la réalité.
-        # self.L_pose_from_odom = Pose()
-        # #Position
-        # self.L_pose_from_odom.position.x = self.L_odom.pose.pose.position.x
-        # self.L_pose_from_odom.position.y = self.L_odom.pose.pose.position.y + 0.5
-        # self.L_pose_from_odom.position.z = self.L_odom.pose.pose.position.z
-
-        # #Orientation
-        # self.L_pose_from_odom.orientation.x = self.L_odom.pose.pose.orientation.x
-        # self.L_pose_from_odom.orientation.y = self.L_odom.pose.pose.orientation.y
-        # self.L_pose_from_odom.orientation.z = self.L_odom.pose.pose.orientation.z
-        # self.L_pose_from_odom.orientation.w = self.L_odom.pose.pose.orientation.w
-
 
 
     def _L_pose_cb(self, data):
@@ -174,27 +161,8 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
     def _R_odom_cb(self, data):
         self.R_odom = data
 
-
-        # Gazebo fait ce qui suit automatiquemnt, ca ne sera pas vrai dans la réalité.
-
-        # self.R_pose_from_odom = Pose()
-        # #Position
-        # self.R_pose_from_odom.position.x = self.R_odom.pose.pose.position.x
-        # self.R_pose_from_odom.position.y = self.R_odom.pose.pose.position.y - 0.5
-        # self.R_pose_from_odom.position.z = self.R_odom.pose.pose.position.z
-
-        # #Orientation
-        # self.R_pose_from_odom.orientation.x = self.R_odom.pose.pose.orientation.x
-        # self.R_pose_from_odom.orientation.y = self.R_odom.pose.pose.orientation.y
-        # self.R_pose_from_odom.orientation.z = self.R_odom.pose.pose.orientation.z
-        # self.R_pose_from_odom.orientation.w = self.R_odom.pose.pose.orientation.w
-
-
-
     def _R_pose_cb(self, data):
         self.R_pose = data
-
-
     # Methods that the TrainingEnvironment will need to define here as virtual
     # because they will be used in RobotGazeboEnv GrandParentClass and defined in the
     # TrainingEnvironment.
@@ -239,7 +207,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         """
         assert mode in ("L", "R", "both")
 
-        self.gazebo.unpauseSim()
+        # self.gazebo.unpauseSim()
 
         if mode == "L" or mode == "both":
             self.check_publisher(self.L_takeoff_pub)
@@ -251,14 +219,12 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
         # When it takes of value of height is around 1.3
         self.wait_for_height(heigh_value_to_check=1, smaller_than=False, epsilon=0.05, update_rate=10, mode = mode)
-        self.gazebo.pauseSim()
-
 
     def reset_pub(self):
-        self.gazebo.unpauseSim()
+        # self.gazebo.unpauseSim()
         self.L_reset_pub.publish(Empty())
         self.R_reset_pub.publish(Empty())
-        self.gazebo.pauseSim()
+        # self.gazebo.pauseSim()
 
     def land(self, mode = "both"):
         """Envoi un message Empty dans les publishers des drones en fonction du paramètre mode
@@ -300,9 +266,6 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         end_wait_time = 0.0
 
         rospy.logdebug("epsilon>>" + str(epsilon))
-
-        # DUR = rospy.Duration(nsecs = 1*10**(8))
-        rospy.sleep(0.2)
 
         while not rospy.is_shutdown() and start_wait_time + 4 > rospy.get_rostime().to_sec():
             if mode == "L" or "both":

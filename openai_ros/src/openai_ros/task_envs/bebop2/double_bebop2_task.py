@@ -31,7 +31,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         #parrotdrone_goto utilisait une space bos, pas nous pour l'instant.
 
         # Lancement de la simulation
-        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", ros_ws_abspath="/home/huss/Bureau/Documents/cat_ws")
+        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", ros_ws_abspath="/home/youcef/drones_ws")
         
         # Paramètres
         self.linear_forward_speed = rospy.get_param( '/bebop2/linear_forward_speed')
@@ -73,12 +73,12 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
         # self.gazebo.pauseSim()
         # self.gazebo.resetSim()
-        # self.gazebo.unpauseSim()
         self.reset_pub()
-        # DUR = rospy.Duration(nsecs = 1*10**(8))
-        # rospy.sleep(DUR)
-        time.sleep(0.1)
+        rospy.sleep(0.1)
+        self.gazebo.unpauseSim()
+        rospy.sleep(0.1)
         self.takeoff()
+        self.gazebo.pauseSim()
         self.number_step = 0
 
 
@@ -158,7 +158,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         distance = self.compute_dist(dist_x, dist_y)
 
         if distance > 1.5 or distance < 0.5: done = True; #print("dist")
-        if dist_z > 0.4: done = True; #print("dist_z")
+        if dist_z > 0.2: done = True; #print("dist_z")
         if self.L_pose.position.z < 0.2 or self.R_pose.position.z < 0.2 : done = True; #print("pose_z")
 
 
@@ -217,8 +217,9 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
             else:
                 reward += 100
             
-            if dist_z > 0.4:
-                reward -= 500
+            if dist_z > 0.1:
+                reward -= 3000 
+            else: reward +=30
             
 
             if abs(L_pitch) >= 1.57 or abs(L_roll) >= 1.57 or abs(R_pitch) >= 1.57 or abs(R_roll) >= 1.57:
