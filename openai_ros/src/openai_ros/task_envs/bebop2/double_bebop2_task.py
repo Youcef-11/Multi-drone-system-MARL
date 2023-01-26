@@ -10,6 +10,7 @@ from tf.transformations import euler_from_quaternion
 import time
 import numpy as np
 from pathlib import Path
+import math
 
 # The path is __init__.py of openai_ros, where we import the MovingCubeOneDiskWalkEnv directly
 MAX_STEP = 1000 # Can be any Value
@@ -126,8 +127,20 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         L_roll, L_pitch, L_yaw = self.get_orientation_euler(self.L_odom.pose.pose.orientation)
         R_roll, R_pitch, R_yaw = self.get_orientation_euler(self.R_odom.pose.pose.orientation)
 
-        observation = np.array([dist_x,dist_y,dist_z, L_speed_x, L_speed_y, L_speed_z, L_angular_z, R_speed_x, R_speed_y, R_speed_z, R_angular_z, L_roll, L_pitch, L_yaw, R_roll, R_pitch, R_yaw])
+        # wrap angles between -PI and PI degrees
+        L_roll, L_pitch, L_yaw = self.wrap_angle(L_roll), self.wrap_angle(L_pitch), self.wrap_angle(L_yaw) 
+        R_roll, R_pitch, R_yaw = self.wrap_angle(R_roll), self.wrap_angle(R_pitch), self.wrap_angle(R_yaw)
+        
+
+
+        observation = np.array([dist_x, dist_y, dist_z, L_speed_x, L_speed_y, L_speed_z, L_angular_z, R_speed_x, R_speed_y, R_speed_z, R_angular_z, L_roll, L_pitch, L_yaw, R_roll, R_pitch, R_yaw])
         return  observation
+    
+
+
+
+    def wrap_angle(self, angle):
+        return math.atan2(math.sin(angle), math.cos(angle))
 
 
 
@@ -148,6 +161,9 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
         R_roll = observations[14]
         R_pitch = observations[15]
+        L_yaw, R_yaw = observations[13], observations[16]
+        
+        yaw_error = abs(L_yaw-R_yaw)
 
         if abs(L_pitch) >= 1.57 or abs(L_roll) >= 1.57:
             rospy.logdebug("Le L_bebop s'est retourné")
@@ -161,9 +177,10 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         dist_x, dist_y, dist_z = observations[0:3]
         distance = self.compute_dist(dist_x, dist_y)
 
-        if distance > 1.5 or distance < 0.5: done = True; 
-        if dist_z > 0.2: done = True; 
-        if self.L_odom.pose.pose.position.z < 0.2 or self.R_odom.pose.pose.position.z < 0.2 : done = True;
+        if distance > 1.5 or distance < 0.5: done = True
+        if dist_z > 0.2: done = True
+        if yaw_error > 0.53 : done = True # ~ 30 degrees 
+        if self.L_odom.pose.pose.position.z < 0.2 or self.R_odom.pose.pose.position.z < 0.2 : done = True
 
         if not done:
             self.do_hasardous_move()
@@ -266,18 +283,23 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
     def system_rewards2(self, observations, done):
 
         #end episode
-        out_reward = -100
-        too_near_reward = -300
-        bad_altitude_reward = -100
-
-        good_distance_reward = 30
-        good_altitude_reward = 30
-        bad_distance_reward = -10
-        bad_altitude_reward = -10
-        step_reward = 5
+        out_reward = -150
+        too_near_reward = -200
+        total_bad_altitude_reward = -150
+        good_yaw = 15
+        bad_yaw = -20
+        good_distance_reward = 20
+        good_altitude_reward = 20
+        bad_distance_reward = -40
+        bad_altitude_reward = -40
+        step_reward = 2
 
 
         dist_x, dist_y, dist_z = observations[0:3]
+        L_yaw, R_yaw = observations[13], observations[16]
+        
+        yaw_error = abs(L_yaw-R_yaw)
+
         distance = self.compute_dist(dist_x, dist_y)
         if done : 
             if distance > 1.5:
@@ -285,7 +307,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
             if distance < 0.5:
                 return too_near_reward
             if dist_z > 0.2:
-                return bad_altitude_reward
+                return total_bad_altitude_reward
 
         else:
             reward = 0
@@ -297,6 +319,12 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
                 reward += good_altitude_reward
             else:
                 reward += bad_altitude_reward
+
+            if yaw_error < 0.2 : # ~11 degrees
+                reward += good_yaw
+            else:
+                reward += bad_yaw
+
             reward += step_reward
             return reward
 
