@@ -79,19 +79,21 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         self.reset_pub()
         rospy.sleep(0.1)
         self.gazebo.unpauseSim()
+        rospy.sleep(0.1)
+        self.takeoff()
 
-        while True:
-            rospy.sleep(0.1)
-            self.takeoff()
-            dist_x = abs(self.L_odom.pose.pose.position.x - self.R_odom.pose.pose.position.x)
-            dist_y = abs(self.L_odom.pose.pose.position.y - self.R_odom.pose.pose.position.y)
-            dist_z = abs(self.L_odom.pose.pose.position.z - self.R_odom.pose.pose.position.z) 
+        # while True:
+        #     rospy.sleep(0.1)
+        #     self.takeoff()
+        #     dist_x = abs(self.L_odom.pose.pose.position.x - self.R_odom.pose.pose.position.x)
+        #     dist_y = abs(self.L_odom.pose.pose.position.y - self.R_odom.pose.pose.position.y)
+        #     dist_z = abs(self.L_odom.pose.pose.position.z - self.R_odom.pose.pose.position.z) 
 
-            if self.compute_dist(dist_x, dist_y, dist_z) >1.02:
-                rospy.logerr("Problème detecté, reset")
-                self._reset_sim()
-            else:
-                break
+        #     if self.compute_dist(dist_x, dist_y, dist_z) >1.02:
+        #         rospy.logerr("Problème detecté, reset : ", self.compute_dist(dist_x, dist_y, dist_z))
+        #         self._reset_sim()
+        #     else:
+        #         break
 
         self.gazebo.pauseSim()
         self.number_step = 0
