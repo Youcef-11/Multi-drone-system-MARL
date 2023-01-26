@@ -334,8 +334,7 @@ class PPOAgent:
 
             self.Actor.Actor.save_weights(f"{folder}/{self.episode}/Actor.h5")
             self.Critic.Critic.save_weights(f"{folder}/{self.episode}/Critic.h5")
-            with open(f'{folder}/{self.epiosde}data.txt', 'w') as f:
-                f.write(f"episode : {self.episode}")
+            with open(f'{folder}/{self.episode}data.txt', 'w') as f:
                 f.write(f"average : {average}")
 
 
@@ -369,7 +368,7 @@ if __name__ == "__main__":
     agent = PPOAgent(env_name)
 
     # A modifier vers le chemin du model entrainé. commenter pour repartir d'un nouveau model
-    agent.load_from_path("/home/huss/.ros/Models/4500", start_episode = 4500)
+    agent.load_from_path("/home/huss/.ros/Models/6656", start_episode = 6656)
     agent.run_batch() # train as PPO
 
     #agent.run_multiprocesses(num_worker = 16)  # train PPO multiprocessed (fastest)
