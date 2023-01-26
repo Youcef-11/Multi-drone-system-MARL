@@ -269,12 +269,14 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
         rospy.logdebug("epsilon>>" + str(epsilon))
 
+
+        self.gazebo.unpauseSim()
         while not rospy.is_shutdown() and start_wait_time + 4 > rospy.get_rostime().to_sec():
             if mode == "L" or "both":
-                L_current_pose = self.check_sensor(self.L_pose_name, Pose)
+                L_current_pose = self.L_odom.pose.pose
                 L_current_height = L_current_pose.position.z
             if mode =="R" or "both":
-                R_current_pose = self.check_sensor(self.R_pose_name, Pose)
+                R_current_pose = self.R_odom.pose.pose
                 R_current_height = R_current_pose.position.z
 
             if smaller_than:
