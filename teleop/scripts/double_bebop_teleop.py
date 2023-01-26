@@ -56,15 +56,15 @@ class teleop:
             self.action_save.append(self.twist)
             obs_L = rospy.wait_for_message("/L_bebop2/odom",Odometry)
             obs_R = rospy.wait_for_message("/R_bebop2/odome", Odometry)
-            self.L_obs.append(obs_L)
-            self.R_obs.append(obs_R)
+            self.L_obs.append(obs_L.pose.pose)
+            self.R_obs.append(obs_R.pose.pose)
             if self.terminate:
                 break
             rate.sleep()
         
         dic = {"action" : self.action_save,"L_obs" : self.L_obs, "R_obs" : self.R_obs}
 
-        np.save("../data/data_real.npy", dic, allow_pickle=True)
+        np.save("../data/data_simu.npy", dic, allow_pickle=True)
 
     def action(self, key):
         self.do_action(key)
@@ -73,33 +73,36 @@ class teleop:
         self.terminate = True
 
     def do_action(self, key):
+
+        self.twist = Twist()
+
         if self.test_action(key, "up"):
-            self.twist.linear.z += 0.05
+            self.twist.linear.z = 0.05
             
         if self.test_action(key, "down"):
-            self.twist.linear.z -= 0.05
+            self.twist.linear.z = -0.05
 
         if self.test_action(key, "forward"):
-            self.twist.linear.x += 0.05
+            self.twist.linear.x = 0.05
 
         if self.test_action(key, "backward"):
-            self.twist.linear.x -= 0.05
+            self.twist.linear.x = -0.05
 
         if self.test_action(key, "left"):
-            self.twist.linear.y += 0.05
+            self.twist.linear.y = 0.05
 
         if self.test_action(key, "right"):
-            self.twist.linear.y -= 0.05
+            self.twist.linear.y = -0.05
 
         if self.test_action(key, "takeoff"):
             self.R_takeoff_pub.publish(Empty()) 
             self.L_takeoff_pub.publish(Empty()) 
         
         if self.test_action(key, "rotate_right"):
-            self.twist.angular.z -= 0.5
+            self.twist.angular.z = -0.5
 
         if self.test_action(key, "rotate_left"):
-            self.twist.angular.z += 0.5
+            self.twist.angular.z = 0.5
 
         if self.test_action(key, "land"):
             self.L_land_pub.publish(Empty()) 
@@ -108,10 +111,10 @@ class teleop:
         if self.test_action(key, "stop"):
             self.twist = Twist()
         
-        self.twist.linear.x = np.clip(self.twist.linear.x, -1, 1)
-        self.twist.linear.y = np.clip(self.twist.linear.y, -1, 1)
-        self.twist.linear.z = np.clip(self.twist.linear.z, -1, 1)
-        self.twist.angular.z = np.clip(self.twist.angular.z, -1, 1)
+        # self.twist.linear.x = np.clip(self.twist.linear.x, -1, 1)
+        # self.twist.linear.y = np.clip(self.twist.linear.y, -1, 1)
+        # self.twist.linear.z = np.clip(self.twist.linear.z, -1, 1)
+        # self.twist.angular.z = np.clip(self.twist.angular.z, -1, 1)
 
         self.L_cmd_pub.publish(self.twist)
         self.R_cmd_pub.publish(self.twist)

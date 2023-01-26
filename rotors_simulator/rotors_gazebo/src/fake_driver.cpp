@@ -22,6 +22,7 @@
 
 //#include "rotors_joy_interface/fake_driver.h"
 
+#define CLAMP(x, l, h) (((x) > (h)) ? (h) : (((x) < (l)) ? (l) : (x)))
 
 
 // Use the structure definitions from the rotors_joy_interface 
@@ -29,10 +30,28 @@
 
 #define DEG2RAD(x) ((x) / 180.0 * M_PI)
 
+void traj_callback(
+      const trajectory_msgs::MultiDOFJointTrajectoryConstPtr& trajectory_reference_msg);
+void joy_callback(const sensor_msgs::JoyConstPtr& msg);
+void odom_callback(const nav_msgs::OdometryConstPtr& msg);
+void joy_enable_callback(const std_msgs::Bool& msg);
+void TakeoffCallback(const std_msgs::Empty& msg);
+void LandCallback(const std_msgs::Empty& msg);
+void StopCallback(const std_msgs::Empty& msg);
+void MoveCallback(const geometry_msgs::Twist& bebop_twist_);
+void reset_pose_callback(const std_msgs::Empty& msg);
+void StopMav();
+void ResetTwist(geometry_msgs::Twist& t);
+
+
+
 ros::Publisher trajectory_pub;
 ros::Subscriber odom_sub, joy_sub, joy_enable_sub, takeoff_sub, land_sub, stop_sub, move_sub, traj_sub, reset_pose_sub;
 nav_msgs::Odometry odom_msg;
 sensor_msgs::Joy joy_msg;
+geometry_msgs::Twist prev_bebop_twist_;
+
+ros::Time prev_twist_stamp_ = ros::Time(0);
 
 bool joy_msg_ready = false;
 bool joy_enable = true;
@@ -48,6 +67,8 @@ bool takeoff = false;
 bool emergency = false;
 bool land = false;
 
+static const double eps = 1.0e-6;
+
 float linear_x = 0.0;
 float linear_y = 0.0;
 float linear_z = 0.0;
@@ -55,6 +76,8 @@ float angular_x = 0.0;
 float angular_y = 0.0;
 float angular_z = 0.0;
 float loc = 0.0;
+
+double param_cmd_vel_timeout_ = 0.2;
 
 int axis_roll  , axis_pitch, 
     axis_thrust, axis_yaw;
@@ -66,17 +89,7 @@ int axis_direction_roll,
 double max_vel,
        max_yawrate;
 
-void traj_callback(
-      const trajectory_msgs::MultiDOFJointTrajectoryConstPtr& trajectory_reference_msg);
-void joy_callback(const sensor_msgs::JoyConstPtr& msg);
-void odom_callback(const nav_msgs::OdometryConstPtr& msg);
-void joy_enable_callback(const std_msgs::Bool& msg);
-void TakeoffCallback(const std_msgs::Empty& msg);
-void LandCallback(const std_msgs::Empty& msg);
-void StopCallback(const std_msgs::Empty& msg);
-void MoveCallback(const geometry_msgs::Twist& msg);
-void reset_pose_callback(const std_msgs::Empty& msg);
-void StopMav();
+
 
 
 
@@ -175,16 +188,50 @@ void TakeoffCallback(const std_msgs::Empty& msg)
   // ROS_INFO("TAKEOFF");
 }
 
-void MoveCallback(const geometry_msgs::Twist& msg){
+
+bool CompareTwists(const geometry_msgs::Twist& lhs, const geometry_msgs::Twist& rhs)
+{
+  return (fabs(lhs.linear.x - rhs.linear.x) < eps) &&
+      (fabs(lhs.linear.y - rhs.linear.y) < eps) &&
+      (fabs(lhs.linear.z - rhs.linear.z) < eps) &&
+      (fabs(lhs.angular.x - rhs.angular.x) < eps) &&
+      (fabs(lhs.angular.y - rhs.angular.y) < eps) &&
+      (fabs(lhs.angular.z - rhs.angular.z) < eps);
+}
+
+void ResetTwist(geometry_msgs::Twist& t)
+{
+  t.linear.x = 0.0;
+  t.linear.y = 0.0;
+  t.linear.z = 0.0;
+  t.angular.x = 0.0;
+  t.angular.y = 0.0;
+  t.angular.z = 0.0;
+}
+
+
+
+void MoveCallback(const geometry_msgs::Twist& bebop_twist_){
   if (takeoff || !start){
     return;
   }
-  linear_x = msg.linear.x;
-  linear_y = msg.linear.y;
-  linear_z = msg.linear.z;
-  angular_x = msg.angular.x;
-  angular_y = msg.angular.y;
-  angular_z = msg.angular.z;
+
+  bool is_bebop_twist_changed = false;
+
+  is_bebop_twist_changed = !CompareTwists(bebop_twist_, prev_bebop_twist_);
+  prev_twist_stamp_ = ros::Time::now();
+  prev_bebop_twist_ = bebop_twist_;
+
+  // Youcef's changes
+  if (is_bebop_twist_changed)
+  {
+    linear_x = CLAMP(bebop_twist_.linear.x, -1.0, 1.0);
+    linear_y = CLAMP(bebop_twist_.linear.y, -1.0, 1.0);
+    linear_z = CLAMP(bebop_twist_.linear.z, -1.0, 1.0);
+    // angular_x = msg.angular.x;
+    // angular_y = msg.angular.y;
+    angular_z = CLAMP(bebop_twist_.angular.z, -1.0, 1.0);
+  }
 } 
 
 void joy_enable_callback(const std_msgs::Bool& msg)
@@ -236,26 +283,24 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
     double psi = atan2(-dcm(0, 1) / cosphi, dcm(1, 1) / cosphi);
     init_yaw = psi;
     init_pose_set = true;
-  }  
+  }
 
-  // if (!init_takeoff && takeoff){
-  //   std::cout << "do I enter here sometimes" << std::endl;
-  //   init_yaw = 0;
-  //   linear_y = 0;
-  //   linear_x = 0;
-  //   linear_z = 0;
-  //   angular_z = 0;
-  //   init_takeoff = true;
-  //   start = true;
-  //   land = false;
-  //   emergency = false;
-  // }
+    geometry_msgs::Twist zero_twist;
+    ResetTwist(zero_twist);   
 
-  //  std::cout << "=============" << std::endl;
-  //  std::cout << "start = " << start << std::endl;
-  //  std::cout << "land = " << start << std::endl;
-  //  std::cout << "takeoff = " << start << std::endl;
-  //  std::cout << "=============" << std::endl;
+    const ros::Time t_now = ros::Time::now();
+    // cmd_vel safety
+    if ( !CompareTwists(prev_bebop_twist_, zero_twist) &&
+        ((t_now - prev_twist_stamp_).toSec() > param_cmd_vel_timeout_)
+        )
+    {
+      ROS_WARN("Input cmd_vel timeout, reseting cmd_vel ...");
+      ResetTwist(prev_bebop_twist_);
+      linear_x = 0;
+      linear_y = 0;
+      linear_z = 0;
+      angular_z = 0;
+    }
 
   // from joystik
   double roll = linear_y * axis_direction_roll;
@@ -369,17 +414,6 @@ void odom_callback(const nav_msgs::OdometryConstPtr& msg){
 
     trajectory_msg.points[0].time_from_start = ros::Duration(1.0);
     trajectory_pub.publish(trajectory_msg);
-
-
   }
-
-  // std::cout << "yaw = " << init_yaw << std::endl;
-  // std::cout << "roll = " << roll << std::endl;
-  // std::cout << "pitch = " << pitch << std::endl;
-
-
-
-  // std::cout << "Desired position = " << cos(init_yaw) * pitch - sin(init_yaw) * roll << ", " << sin(init_yaw) * pitch + cos(init_yaw) * roll << ", " << thrust << std::endl;
-
 }
 
