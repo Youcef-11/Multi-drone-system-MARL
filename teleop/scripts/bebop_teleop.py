@@ -3,6 +3,7 @@ import rospy
 from pynput.keyboard import Key, Listener
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Empty
+import numpy as np 
 import time
 
 
@@ -23,6 +24,7 @@ class teleop:
         rospy.init_node("bebop_teleop")
         self.lis = Listener(on_press= self.action)
         self.lis.start()
+        self.timeout = 0.2
 
         self.namespace = namespace
         self.keys = keybindings
@@ -32,42 +34,79 @@ class teleop:
         self.land_pub = rospy.Publisher(f"/{self.namespace}/land", Empty, queue_size=1)
 
         self.twist = Twist()
+        self.accelerate_mode = False
+        self.speed_tab = [0.2, 0.5, 0.8]
+
+        # speed choice (indice in the speed_tab)
+        self.sc = 0
+        self.last_pub = 0
+
 
         self.display_help()
 
 
     def action(self, key):
-        self.do_action(key)
+
+        if rospy.get_rostime().to_sec() > self.last_pub + self.timeout:
+            # On reset le twist dans ce cas la 
+            self.twist = Twist()
+
+        if self.test_action(key, "mode"):
+            self.accelerate_mode = not self.accelerate_mode
+            print(f"{self.namespace} : mode accelerate : {self.accelerate_mode}")
+
+        if self.test_action(key, "change_speed"):
+            self.sc = (self.sc + 1) %3 
+            print(f"{self.namespace} : Speed changed to {self.speed_tab[self.sc]}")
+
+        if not self.accelerate_mode:
+            self.do_action(key)
+        else: 
+            self.do_action_accelerate(key)
 
 
+        self.twist = self.clip_twist(self.twist)
+        self.cmd_pub.publish(self.twist)
+        self.last_pub = rospy.get_rostime().to_sec()
+
+        
+
+
+
+    def clip_twist(self,twist):
+        twist.linear.x = np.clip(twist.linear.x, -1, 1)
+        twist.linear.y = np.clip(twist.linear.y, -1, 1)
+        twist.linear.z = np.clip(twist.linear.z, -1, 1)
+        twist.angular.z = np.clip(twist.angular.z, -1, 1)
+        return twist
 
     def do_action(self, key):
         if self.test_action(key, "up"):
-            self.twist.linear.z += 0.05
+            self.twist.linear.z = self.speed_tab[self.sc]
             
         if self.test_action(key, "down"):
-            self.twist.linear.z -= 0.05
+            self.twist.linear.z = -self.speed_tab[self.sc]
 
         if self.test_action(key, "forward"):
-            self.twist.linear.x += 0.05
+            self.twist.linear.x = self.speed_tab[self.sc]
 
         if self.test_action(key, "backward"):
-            self.twist.linear.x -= 0.05
+            self.twist.linear.x = -self.speed_tab[self.sc]
 
         if self.test_action(key, "left"):
-            self.twist.linear.y += 0.05
+            self.twist.linear.y = self.speed_tab[self.sc]
 
         if self.test_action(key, "right"):
-            self.twist.linear.y -= 0.05
+            self.twist.linear.y = -self.speed_tab[self.sc]
 
         if self.test_action(key, "takeoff"):
             self.takeoff_pub.publish(Empty()) 
         
         if self.test_action(key, "rotate_right"):
-            self.twist.angular.z -= 0.5
+            self.twist.angular.z = -self.speed_tab[self.sc] * 2
 
         if self.test_action(key, "rotate_left"):
-            self.twist.angular.z += 0.5
+            self.twist.angular.z = self.speed_tab[self.sc]* 2
 
         if self.test_action(key, "land"):
             self.land_pub.publish(Empty()) 
@@ -76,8 +115,43 @@ class teleop:
             self.twist = Twist()
 
 
+    def do_action_accelerate(self, key):
+        if self.test_action(key, "up"):
+            self.twist.linear.z += 0.1
+            
+        if self.test_action(key, "down"):
+            self.twist.linear.z -= 0.1
 
-        self.cmd_pub.publish(self.twist)
+        if self.test_action(key, "forward"):
+            self.twist.linear.x += 0.1
+
+        if self.test_action(key, "backward"):
+            self.twist.linear.x -= 0.1
+
+        if self.test_action(key, "left"):
+            self.twist.linear.y += 0.1
+
+        if self.test_action(key, "right"):
+            self.twist.linear.y -= 0.1
+
+        if self.test_action(key, "takeoff"):
+            self.takeoff_pub.publish(Empty()) 
+        
+        if self.test_action(key, "rotate_right"):
+            self.twist.angular.z -= 0.3
+
+        if self.test_action(key, "rotate_left"):
+            self.twist.angular.z += 0.3
+
+        if self.test_action(key, "land"):
+            self.land_pub.publish(Empty()) 
+
+        if self.test_action(key, "stop"):
+            self.twist = Twist()
+
+        
+
+
 
 
     def test_action(self, key, action):
@@ -103,7 +177,10 @@ L_keybinds = {
     "rotate_left" : '1',
     "takeoff" : '+',
     "land" : Key.enter,
-    "stop" : '0'
+    "stop" : '0',
+    "mode" : Key.f1,
+    "change_speed" : Key.ctrl_r
+
 }
 
 R_keybinds = {
@@ -117,7 +194,9 @@ R_keybinds = {
     "rotate_left" : 'w',
     "takeoff" : Key.space,
     "land" : 'f',
-    "stop" : 'x'
+    "stop" : 'x',
+    "mode" : Key.f2,
+    "change_speed" : Key.ctrl_l
 }
 
 Left = teleop("L_bebop2", L_keybinds)

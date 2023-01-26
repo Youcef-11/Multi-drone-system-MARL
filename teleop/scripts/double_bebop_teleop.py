@@ -1,10 +1,10 @@
-#!/usr/bin/env python
 import rospy
 from pynput.keyboard import Key, Listener
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Empty
 from nav_msgs.msg import Odometry
 import numpy as np
+import time
 import signal
 
 
@@ -47,6 +47,10 @@ class teleop:
         self.action_save = []
         self.L_obs = []
         self.R_obs = []
+
+        self.speed_tab = [0.2, 0.5, 0.8]
+        self.sc = 0
+
         self.terminate = False
         signal.signal(signal.SIGINT, self.signal_handle)
 
@@ -67,6 +71,9 @@ class teleop:
         np.save("../data/data_simu.npy", dic, allow_pickle=True)
 
     def action(self, key):
+        if self.test_action(key, "change_speed"):
+            self.sc = (self.sc + 1) %3 
+            print(f"change : Speed changed to {self.speed_tab[self.sc]}")
         self.do_action(key)
 
     def signal_handle(self, sig, frame):
@@ -75,33 +82,34 @@ class teleop:
     def do_action(self, key):
 
         self.twist = Twist()
+
         if self.test_action(key, "up"):
-            self.twist.linear.z = 0.15
+            self.twist.linear.z = self.speed_tab[self.sc]
             
         if self.test_action(key, "down"):
-            self.twist.linear.z = -0.15
+            self.twist.linear.z = - self.speed_tab[self.sc]
 
         if self.test_action(key, "forward"):
-            self.twist.linear.x = 0.15
+            self.twist.linear.x = self.speed_tab[self.sc]
 
         if self.test_action(key, "backward"):
-            self.twist.linear.x = -0.15
+            self.twist.linear.x = -self.speed_tab[self.sc]
 
         if self.test_action(key, "left"):
-            self.twist.linear.y = 0.15
+            self.twist.linear.y = self.speed_tab[self.sc]
 
         if self.test_action(key, "right"):
-            self.twist.linear.y = -0.15
+            self.twist.linear.y = -self.speed_tab[self.sc]
 
         if self.test_action(key, "takeoff"):
             self.R_takeoff_pub.publish(Empty()) 
             self.L_takeoff_pub.publish(Empty()) 
         
         if self.test_action(key, "rotate_right"):
-            self.twist.angular.z = -0.15
+            self.twist.angular.z = -1
 
         if self.test_action(key, "rotate_left"):
-            self.twist.angular.z = 0.15
+            self.twist.angular.z = 1
 
         if self.test_action(key, "land"):
             self.L_land_pub.publish(Empty()) 
@@ -143,7 +151,8 @@ keybinds = {
     "rotate_left" : '1',
     "takeoff" : '+',
     "land" : Key.enter,
-    "stop" : '0'
+    "stop" : '0',
+    "change_speed" : "*"
 }
 
 
