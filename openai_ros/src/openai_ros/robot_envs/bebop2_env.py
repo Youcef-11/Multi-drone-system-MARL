@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from openai_ros import robot_gazebo_env
 from sensor_msgs.msg import Image
 from nav_msgs.msg import Odometry

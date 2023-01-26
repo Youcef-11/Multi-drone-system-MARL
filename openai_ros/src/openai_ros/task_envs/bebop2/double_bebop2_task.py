@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from gym import spaces
 from openai_ros.robot_envs import double_bebop2_env
 from openai_ros.openai_ros_common import ROSLauncher
