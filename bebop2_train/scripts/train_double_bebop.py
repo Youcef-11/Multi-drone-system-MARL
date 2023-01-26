@@ -157,6 +157,7 @@ class PPOAgent:
         pre_sum = -0.5 * (((action-pred)/(np.exp(log_std)+1e-8))**2 + 2*log_std + np.log(2*np.pi)) 
         return np.sum(pre_sum, axis=1)
 
+
     def discount_rewards(self, reward):#gaes is better
         # Compute the gamma-discounted rewards over an episode
         # We apply the discount and normalize it to avoid big variability of rewards
@@ -310,6 +311,13 @@ class PPOAgent:
 
         self.env.close()
 
+    def load_from_path(self, path, start_episode = None):
+        self.Actor.Actor.load_weights(path + "/Actor.h5")
+        self.Critic.Critic.load_weights(path + "/Critic.h5")
+        if start_episode is not None : 
+            self.episode = start_episode
+
+
 
     def periodic_save(self,average , folder = "Models"):
         if not os.path.isdir(folder): 
@@ -320,83 +328,16 @@ class PPOAgent:
         else:
             average = int(average)
 
-        if self.episode % 500 == 0 and self.episode != 0:
+        if self.episode % self.Training_batch == 0 and self.episode != 0:
             if not os.path.isdir(f"{folder}/{self.episode}"):
                 os.mkdir(f"{folder}/{self.episode}")
 
-            self.Actor.Actor.save_weights(f"{folder}/{self.episode}/Actor_{average}.h5")
-            self.Critic.Critic.save_weights(f"{folder}/{self.episode}/Critic_{average}.h5")
+            self.Actor.Actor.save_weights(f"{folder}/{self.episode}/Actor.h5")
+            self.Critic.Critic.save_weights(f"{folder}/{self.episode}/Critic.h5")
+            with open(f'{folder}/{self.epiosde}data.txt', 'w') as f:
+                f.write(f"episode : {self.episode}")
+                f.write(f"average : {average}")
 
-    # def run_multiprocesses(self, num_worker = 4):
-
-    #     works, parent_conns, child_conns = [], [], []
-    #     for idx in range(num_worker):
-    #         parent_conn, child_conn = Pipe()
-    #         work = Environment(idx, child_conn, self.env_name, self.state_size[0], self.action_size, True)
-    #         work.start()
-    #         works.append(work)
-    #         parent_conns.append(parent_conn)
-    #         child_conns.append(child_conn)
-
-    #     states =        [[] for _ in range(num_worker)]
-    #     next_states =   [[] for _ in range(num_worker)]
-    #     actions =       [[] for _ in range(num_worker)]
-    #     rewards =       [[] for _ in range(num_worker)]
-    #     dones =         [[] for _ in range(num_worker)]
-    #     logp_ts =       [[] for _ in range(num_worker)]
-    #     score =         [0 for _ in range(num_worker)]
-
-    #     state = [0 for _ in range(num_worker)]
-    #     for worker_id, parent_conn in enumerate(parent_conns):
-    #         state[worker_id] = parent_conn.recv()
-
-    #     while self.episode < self.EPISODES:
-    #         # get batch of action's and log_pi's
-    #         action, logp_pi = self.act(np.reshape(state, [num_worker, self.state_size[0]]))
-            
-    #         for worker_id, parent_conn in enumerate(parent_conns):
-    #             parent_conn.send(action[worker_id])
-    #             actions[worker_id].append(action[worker_id])
-    #             logp_ts[worker_id].append(logp_pi[worker_id])
-
-    #         for worker_id, parent_conn in enumerate(parent_conns):
-    #             next_state, reward, done, _ = parent_conn.recv()
-
-    #             states[worker_id].append(state[worker_id])
-    #             next_states[worker_id].append(next_state)
-    #             rewards[worker_id].append(reward)
-    #             dones[worker_id].append(done)
-    #             state[worker_id] = next_state
-    #             score[worker_id] += reward
-
-    #             if done:
-    #                 average, SAVING = self.PlotModel(score[worker_id], self.episode)
-    #                 print("episode: {}/{}, worker: {}, score: {}, average: {:.2f} {}".format(self.episode, self.EPISODES, worker_id, score[worker_id], average, SAVING))
-    #                 self.writer.add_scalar(f'Workers:{num_worker}/score_per_episode', score[worker_id], self.episode)
-    #                 self.writer.add_scalar(f'Workers:{num_worker}/learning_rate', self.lr, self.episode)
-    #                 self.writer.add_scalar(f'Workers:{num_worker}/average_score',  average, self.episode)
-    #                 score[worker_id] = 0
-    #                 if(self.episode < self.EPISODES):
-    #                     self.episode += 1
-                        
-                        
-    #         for worker_id in range(num_worker):
-    #             if len(states[worker_id]) >= self.Training_batch:
-    #                 self.replay(states[worker_id], actions[worker_id], rewards[worker_id], dones[worker_id], next_states[worker_id], logp_ts[worker_id])
-
-    #                 states[worker_id] = []
-    #                 next_states[worker_id] = []
-    #                 actions[worker_id] = []
-    #                 rewards[worker_id] = []
-    #                 dones[worker_id] = []
-    #                 logp_ts[worker_id] = []
-
-    #     # terminating processes after a while loop
-    #     works.append(work)
-    #     for work in works:
-    #         work.terminate()
-    #         print('TERMINATED:', work)
-    #         work.join()
 
     def test(self, test_episodes = 100):#evaluate
         self.load()
@@ -426,6 +367,10 @@ if __name__ == "__main__":
 
     env_name = 'DoubleBebop2Env-v0'
     agent = PPOAgent(env_name)
+
+    # A modifier vers le chemin du model entrainé. commenter pour repartir d'un nouveau model
+    agent.load_from_path("/home/huss/.ros/Models/4500", start_episode = 4500)
     agent.run_batch() # train as PPO
+
     #agent.run_multiprocesses(num_worker = 16)  # train PPO multiprocessed (fastest)
     # agent.test()
