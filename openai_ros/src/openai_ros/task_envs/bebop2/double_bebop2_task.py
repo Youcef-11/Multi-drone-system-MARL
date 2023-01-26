@@ -75,13 +75,24 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         :return:
         """
 
-        # self.gazebo.pauseSim()
-        # self.gazebo.resetSim()
+
         self.reset_pub()
         rospy.sleep(0.1)
         self.gazebo.unpauseSim()
         rospy.sleep(0.1)
-        self.takeoff()
+
+        while True:
+            self.takeoff()
+            dist_x = abs(self.L_odom.pose.pose.position.x - self.R_odom.pose.pose.position.x)
+            dist_y = abs(self.L_odom.pose.pose.position.y - self.R_odom.pose.pose.position.y)
+            dist_z = abs(self.L_odom.pose.pose.position.z - self.R_odom.pose.pose.position.z) 
+
+            if self.compute_dist(dist_x, dist_y, dist_z) >1.02:
+                rospy.logerr("Problème detecté, reset")
+                self._reset_sim()
+            else:
+                break
+
         self.gazebo.pauseSim()
         self.number_step = 0
 
@@ -182,11 +193,6 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         if yaw_error > 0.53 : done = True # ~ 30 degrees 
         if self.L_odom.pose.pose.position.z < 0.2 or self.R_odom.pose.pose.position.z < 0.2 : done = True
 
-        if not done:
-            self.do_hasardous_move()
-        
-
-
         return done
     
 
@@ -195,16 +201,17 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
             Par la suite on voudra aussi que le drones esquives les obstacles (pas pour l'instant)
         On utilisera une reward linéiar en fonction de la distance entre les drones
         """
-        #reward = self.reward_system1(observations, done)
-        reward = self.system_rewards2(observations, done)
-
+        # System rewards 1 2 ou 3 
+        reward = self.reward_system3(observations, done)
         return reward
         
     # Internal TaskEnv Methods
 
 
-    def compute_dist(self,dist_x, dist_y):
-        return (dist_x**2 + dist_y **2)**0.5
+    def compute_dist(self,*args):
+        d = np.array(args)
+        dist = np.sum(d**2)**0.5
+        return dist
 
 
     def get_orientation_euler(self, quaternion_vector):
@@ -280,7 +287,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
                 reward += 1000
         return reward
     
-    def system_rewards2(self, observations, done):
+    def reward_system2(self, observations, done):
 
         #end episode
         out_reward = -150
@@ -329,6 +336,67 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
             reward += step_reward
             return reward
+
+    def reward_system3(self, observations, done):
+
+        out_reward = -150
+        too_near_reward = -200
+        total_bad_altitude_reward = -150
+        good_yaw = 15
+        bad_yaw = -20
+        good_distance_reward = 20
+        good_altitude_reward = 20
+        step_reward = 5
+
+        speed_penalty = -100
+
+
+        dist_x, dist_y, dist_z = observations[0:3]
+        Lvx, Lvy, Lvz, Laz, Rvx, Rvy, Rvz, Raz = observations[3:11]
+        L_yaw, R_yaw = observations[13], observations[16]
+        
+        yaw_error = abs(L_yaw-R_yaw)
+
+        distance = self.compute_dist(dist_x, dist_y)
+        if done :
+            reward = 0
+            if distance > 1.5:
+                reward += out_reward
+            if distance < 0.5:
+                reward += too_near_reward
+            if dist_z > 0.2:
+                reward += total_bad_altitude_reward
+            return reward
+
+        else:
+            reward = 0
+            if abs(distance -1 ) < 0.1:
+                reward += good_distance_reward
+
+            if dist_z < 0.1: 
+                reward += good_altitude_reward
+
+            if yaw_error < 0.2 : # ~11 degrees
+                reward += good_yaw
+            else:
+                reward += bad_yaw
+            
+            # Il faut que les vitesses soient les memes (les drones vont au meme endroit)
+            if Lvx*Rvx < 0  and abs(Lvx - Rvx) > 0.05:
+                reward += speed_penalty
+
+            if Lvy*Rvy < 0  and abs(Lvy - Rvy) > 0.05:
+                reward += speed_penalty
+
+            if Lvz*Rvz < 0  and abs(Lvz - Rvz) > 0.05:
+                reward += speed_penalty
+
+            if Laz*Raz < 0  and abs(Laz - Raz) > 0.05:
+                reward += speed_penalty
+
+            reward += step_reward
+            return reward
+
 
             
             

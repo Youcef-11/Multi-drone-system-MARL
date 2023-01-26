@@ -294,6 +294,8 @@ class PPOAgent:
                 if done:
                     self.episode += 1
                     average, SAVING = self.PlotModel(score, self.episode)
+                    self.periodic_save(average)
+                    
                     print("episode: {}/{}, score: {}, average: {:.2f} {}".format(self.episode, self.EPISODES, score, average, SAVING))
                     self.writer.add_scalar(f'Workers:{1}/score_per_episode', score, self.episode)
                     self.writer.add_scalar(f'Workers:{1}/learning_rate', self.lr, self.episode)
@@ -309,7 +311,24 @@ class PPOAgent:
         self.env.close()
 
 
+    def periodic_save(self,average , folder = "Models"):
+        if not os.path.isdir(folder): 
+            os.mkdir(folder)
+
+        if average < 0:
+            average = f"{int(average)}"
+        else:
+            average = int(average)
+
+        if self.episode % 500 == 0 and self.episode != 0:
+            if not os.path.isdir(f"{folder}/{self.episode}"):
+                os.mkdir(f"{folder}/{self.episode}")
+
+            self.Actor.Actor.save_weights(f"{folder}/{self.episode}/Actor_{average}.h5")
+            self.Critic.Critic.save_weights(f"{folder}/{self.episode}/Critic_{average}.h5")
+
     # def run_multiprocesses(self, num_worker = 4):
+
     #     works, parent_conns, child_conns = [], [], []
     #     for idx in range(num_worker):
     #         parent_conn, child_conn = Pipe()

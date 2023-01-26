@@ -362,3 +362,23 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         
 
 
+    def step(self, action):
+        """
+        Redefinition de la fonction step por ajotuer hazardous move
+        """
+        rospy.logdebug("START STEP OpenAIROS")
+
+        self.gazebo.unpauseSim()
+        self.do_hasardous_move()
+        self._set_action(action)
+        self.gazebo.pauseSim()
+        obs = self._get_obs()
+        done = self._is_done(obs)
+        info = {}
+        reward = self._compute_reward(obs, done)
+        # self.cumulated_episode_reward += reward
+
+        rospy.logdebug("END STEP OpenAIROS")
+
+        return obs, reward, done, info
+
