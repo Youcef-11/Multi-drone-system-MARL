@@ -292,7 +292,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         good_altitude_reward = 20
         bad_distance_reward = -40
         bad_altitude_reward = -40
-        step_reward = 2
+        step_reward = 5
 
 
         dist_x, dist_y, dist_z = observations[0:3]
@@ -301,13 +301,15 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         yaw_error = abs(L_yaw-R_yaw)
 
         distance = self.compute_dist(dist_x, dist_y)
-        if done : 
+        if done :
+            reward = 0
             if distance > 1.5:
-                return out_reward
+                reward += out_reward
             if distance < 0.5:
-                return too_near_reward
+                reward += too_near_reward
             if dist_z > 0.2:
-                return total_bad_altitude_reward
+                reward += total_bad_altitude_reward
+            return reward
 
         else:
             reward = 0
