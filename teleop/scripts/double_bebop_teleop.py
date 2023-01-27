@@ -1,11 +1,13 @@
+#!/usr/bin/env python
 import rospy
 from pynput.keyboard import Key, Listener
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Empty
 from nav_msgs.msg import Odometry
 import numpy as np
+import os 
+from pathlib import Path
 import time
-import signal
 
 
 # def compare_twist(t1, t2):
@@ -51,24 +53,32 @@ class teleop:
         self.speed_tab = [0.2, 0.5, 0.8]
         self.sc = 0
 
-        self.terminate = False
-        signal.signal(signal.SIGINT, self.signal_handle)
+
 
         rate = rospy.Rate(10)
 
         while not rospy.is_shutdown():
-            self.action_save.append(self.twist)
-            obs_L = rospy.wait_for_message("/L_bebop2/odom",Odometry)
-            obs_R = rospy.wait_for_message("/R_bebop2/odome", Odometry)
-            self.L_obs.append(obs_L.pose.pose)
-            self.R_obs.append(obs_R.pose.pose)
-            if self.terminate:
+            try:
+                self.action_save.append(self.twist)
+                obs_L = rospy.wait_for_message("/L_bebop2/odom",Odometry)
+                obs_R = rospy.wait_for_message("/R_bebop2/odom", Odometry)
+                self.L_obs.append(obs_L.pose.pose)
+                self.R_obs.append(obs_R.pose.pose)
+                
+                rate.sleep()
+            except (KeyboardInterrupt, rospy.ROSInterruptException):
                 break
-            rate.sleep()
-        
+
+            
         dic = {"action" : self.action_save,"L_obs" : self.L_obs, "R_obs" : self.R_obs}
 
-        np.save("../data/data_simu.npy", dic, allow_pickle=True)
+        save_path = str(Path(__file__).parent.parent) + "/data"
+        file_name = "data_real"
+
+        if not os.path.isdir(save_path):
+            os.mkdir(save_path)
+        np.save(save_path + '/' + file_name, dic, allow_pickle=True)
+        print("\nFile saved to :" + save_path + '/' + file_name)
 
     def action(self, key):
         if self.test_action(key, "change_speed"):
@@ -76,8 +86,6 @@ class teleop:
             print(f"change : Speed changed to {self.speed_tab[self.sc]}")
         self.do_action(key)
 
-    def signal_handle(self, sig, frame):
-        self.terminate = True
 
     def do_action(self, key):
 
@@ -157,6 +165,7 @@ keybinds = {
 
 
 if __name__ == "__main__":
-    rospy.init_node("double_bebop_teleop", anonymous=True)
+    rospy.init_node("double_bebop_teleop")
     tele = teleop(keybinds)
+
 

@@ -297,7 +297,7 @@ class PPOAgent:
                     average, SAVING = self.PlotModel(score, self.episode)
                     self.periodic_save(average)
                     
-                    print("episode: {}/{}, score: {}, average: {:.2f} {}".format(self.episode, self.EPISODES, score, average, SAVING))
+                    print("episode: {}/{}, score: {}, average: {:.2f}, step : {} {}".format(self.episode, self.EPISODES, score, average,t, SAVING))
                     self.writer.add_scalar(f'Workers:{1}/score_per_episode', score, self.episode)
                     self.writer.add_scalar(f'Workers:{1}/learning_rate', self.lr, self.episode)
                     self.writer.add_scalar(f'Workers:{1}/average_score',  average, self.episode)
@@ -328,13 +328,13 @@ class PPOAgent:
         else:
             average = int(average)
 
-        if self.episode % self.Training_batch == 0 and self.episode != 0:
+        if self.episode % 500 == 0 and self.episode != 0:
             if not os.path.isdir(f"{folder}/{self.episode}"):
                 os.mkdir(f"{folder}/{self.episode}")
 
             self.Actor.Actor.save_weights(f"{folder}/{self.episode}/Actor.h5")
             self.Critic.Critic.save_weights(f"{folder}/{self.episode}/Critic.h5")
-            with open(f'{folder}/{self.episode}data.txt', 'w') as f:
+            with open(f'{folder}/{self.episode}/data.txt', 'w') as f:
                 f.write(f"average : {average}")
 
 
@@ -368,7 +368,7 @@ if __name__ == "__main__":
     agent = PPOAgent(env_name)
 
     # A modifier vers le chemin du model entrainé. commenter pour repartir d'un nouveau model
-    agent.load_from_path("/home/huss/.ros/Models/6656", start_episode = 6656)
+    agent.load_from_path("/home/huss/.ros/Models/18944", start_episode = 18944)
     agent.run_batch() # train as PPO
 
     #agent.run_multiprocesses(num_worker = 16)  # train PPO multiprocessed (fastest)

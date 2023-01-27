@@ -341,17 +341,17 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
             return reward
 
     def reward_system3(self, observations, done):
+        # Ah ouai ?
+        out_reward = -400
+        too_near_reward = -500
+        total_bad_altitude_reward = -350
+        good_yaw = 5
+        bad_yaw = -10
+        good_distance_reward = 10
+        good_altitude_reward = 10
+        step_reward = 3
 
-        out_reward = -150
-        too_near_reward = -200
-        total_bad_altitude_reward = -150
-        good_yaw = 15
-        bad_yaw = -20
-        good_distance_reward = 20
-        good_altitude_reward = 20
-        step_reward = 5
-
-        speed_penalty = -100
+        speed_penalty = -50
 
 
         dist_x, dist_y, dist_z = observations[0:3]
@@ -367,13 +367,13 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
                 reward += out_reward
             if distance < 0.5:
                 reward += too_near_reward
-            if dist_z > 0.2:
+            if dist_z >= 0.2:
                 reward += total_bad_altitude_reward
             return reward
 
         else:
             reward = 0
-            if abs(distance -1 ) < 0.1:
+            if abs(distance -1 ) < 0.15:
                 reward += good_distance_reward
 
             if dist_z < 0.1: 
@@ -384,18 +384,19 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
             else:
                 reward += bad_yaw
             
-            # Il faut que les vitesses soient les memes (les drones vont au meme endroit)
-            if Lvx*Rvx < 0  and abs(Lvx - Rvx) > 0.05:
-                reward += speed_penalty
+            # Il faut que les vitesses soient les memes (les drones vont au meme endroit) (sauf si ils sont trop proche)
+            if distance > 0.8: 
+                if Lvx*Rvx < 0  and abs(Lvx - Rvx) > 0.05:
+                    reward += speed_penalty
 
-            if Lvy*Rvy < 0  and abs(Lvy - Rvy) > 0.05:
-                reward += speed_penalty
+                if Lvy*Rvy < 0  and abs(Lvy - Rvy) > 0.05:
+                    reward += speed_penalty
 
-            if Lvz*Rvz < 0  and abs(Lvz - Rvz) > 0.05:
-                reward += speed_penalty
+                if Lvz*Rvz < 0  and abs(Lvz - Rvz) > 0.05:
+                    reward += speed_penalty
 
-            if Laz*Raz < 0  and abs(Laz - Raz) > 0.05:
-                reward += speed_penalty
+                if Laz*Raz < 0  and abs(Laz - Raz) > 0.05:
+                    reward += speed_penalty
 
             reward += step_reward
             return reward
