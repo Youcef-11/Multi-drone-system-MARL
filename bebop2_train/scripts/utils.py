@@ -114,10 +114,11 @@ class SAC(LightningModule):
 
     def __init__(self, env_name, capacity=100_000, batch_size=256, lr=1e-3, 
             hidden_size=256, gamma=0.99, loss_fn=F.smooth_l1_loss, optim=AdamW, 
-            samples_per_epoch=1_000, tau=0.05, alpha=0.02, epsilon=0.05):
+            samples_per_epoch=1_000, tau=0.05, alpha=0.02, epsilon=0.05, make_env = True):
 
         super().__init__()
 
+        
         self.env = gym.make(env_name)
 
         obs_size = 17

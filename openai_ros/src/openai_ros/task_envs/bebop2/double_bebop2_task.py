@@ -35,7 +35,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         #parrotdrone_goto utilisait une space bos, pas nous pour l'instant.
 
         # Lancement de la simulation
-        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_2_bebop.launch", 
+        ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_train.launch", 
                     ros_ws_abspath=str(Path(__file__).parent.parent.parent.parent.parent.parent.parent))
         
         # Paramètres
@@ -212,7 +212,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         On utilisera une reward linéiar en fonction de la distance entre les drones
         """
         # System rewards 1 2 ou 3 
-        reward = self.reward_system3(observations, done)
+        reward = self.reward_system0(observations, done)
         return reward
         
     # Internal TaskEnv Methods
@@ -236,6 +236,28 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
 
 ##### REWARD SYSTEM : 
+    def reward_system0(self, observations, done): 
+
+        dist_x, dist_y, dist_z = observations[0:3]
+        distance = self.compute_dist(dist_x, dist_y)
+        reward = 0
+
+        if done : 
+            if distance > 2: 
+                reward = -200
+            elif dist_z > 0.2:
+                reward = -100
+            
+        if not done: 
+            if (1 - distance)  > 0.15:
+                reward  = 15
+            else: 
+                reward = 1
+            
+            reward +=2
+        
+        return reward
+        
 
     def reward_system1(self, observations, done):
         L_roll = observations[11]

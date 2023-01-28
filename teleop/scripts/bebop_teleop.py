@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import rospy
-from pynput.keyboard import Key, Listener
+from pynput.keyboard import Key, Listener, Events
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Empty
 import numpy as np 
@@ -32,6 +32,7 @@ class teleop:
         self.cmd_pub = rospy.Publisher(f"/{self.namespace}/cmd_vel", Twist, queue_size=1)
         self.takeoff_pub = rospy.Publisher(f"/{self.namespace}/takeoff", Empty, queue_size=1)
         self.land_pub = rospy.Publisher(f"/{self.namespace}/land", Empty, queue_size=1)
+        self.has_takeoff = False
 
         self.twist = Twist()
         self.accelerate_mode = False
@@ -43,6 +44,7 @@ class teleop:
 
 
         self.display_help()
+
 
 
     def action(self, key):
@@ -65,6 +67,8 @@ class teleop:
             else:
                 self.takeoff_pub.publish(Empty()) 
 
+            self.has_takeoff = not self.has_takeoff
+
         if not self.accelerate_mode:
             self.do_action(key)
         else: 
@@ -74,6 +78,8 @@ class teleop:
         self.twist = self.clip_twist(self.twist)
         self.cmd_pub.publish(self.twist)
         self.last_pub = rospy.get_rostime().to_sec()
+        rospy.sleep(0.05)
+
 
         
 
@@ -194,7 +200,7 @@ R_keybinds = {
     "change_speed" : Key.ctrl_l
 }
 
-Left = teleop("L_bebop2", R_keybinds)
-#Right = teleop("R_bebop2", R_keybinds)
+Left = teleop("L_bebop2", L_keybinds)
+Right = teleop("R_bebop2", R_keybinds)
 
 rospy.spin()

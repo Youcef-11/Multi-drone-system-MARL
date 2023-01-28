@@ -81,6 +81,7 @@ class teleop:
         print("\nFile saved to :" + save_path + '/' + file_name)
 
     def action(self, key):
+
         if self.test_action(key, "change_speed"):
             self.sc = (self.sc + 1) %3 
             print(f"change : Speed changed to {self.speed_tab[self.sc]}")
