@@ -14,12 +14,14 @@ if __name__ == '__main__':
 
     rospy.init_node('SAC_bebop_train')
     
-    algo = SAC('DoubleBebop2Env-v0', lr=1e-3, alpha=0.002, tau=0.1)
+    algo = SAC('DoubleBebop2Env-v0', lr=1e-3, alpha=0.002, tau=0.1, samples_per_epoch=10)
+    algo.load_from_checkpoint("/home/huss/.ros/SAC_Models/lightning_logs/version_4/checkpoints/epoch=166-step=1336.ckpt")
 
     trainer = Trainer(
         gpus=num_gpus, 
-        max_epochs=600,
-        log_every_n_steps=1
+        max_epochs=170,
+        log_every_n_steps=1,
+        default_root_dir="SAC_Models/"
     )
 
     trainer.fit(algo)

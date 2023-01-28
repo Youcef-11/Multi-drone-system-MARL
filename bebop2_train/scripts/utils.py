@@ -123,7 +123,7 @@ class SAC(LightningModule):
         obs_size = 17
         action_dims = 4
         max_action = np.array([1,1,1,1])
-
+        self.episode = 0
         self.q_net1 = DQN(hidden_size, obs_size, action_dims)
         self.q_net2 = DQN(hidden_size, obs_size, action_dims)
         self.policy = GradientPolicy(hidden_size, obs_size, action_dims, max_action)
@@ -137,13 +137,17 @@ class SAC(LightningModule):
         self.save_hyperparameters()
 
         while len(self.buffer) < self.hparams.samples_per_epoch:
-            print(f"{len(self.buffer)} samples in experience buffer. Filling...")
-            self.play_episodes()
+            print(f"{len(self.buffer)} samples in experience buffer. Filling...", end = '')
+            score = self.play_episodes()
+            print(f" : Score = {score}")
+
 
     @torch.no_grad()
     def play_episodes(self, policy=None):
         obs = self.env.reset()
         done = False
+
+        score = 0
 
         while not done:
             if policy and random.random() > self.hparams.epsilon:
@@ -156,6 +160,9 @@ class SAC(LightningModule):
             exp = (obs, action, reward, done, next_obs)
             self.buffer.append(exp)
             obs = next_obs
+            score += reward
+        
+        return score
 
     def forward(self, x):
         output = self.policy(x)
@@ -216,10 +223,11 @@ class SAC(LightningModule):
             return policy_loss
 
     def training_epoch_end(self, training_step_outputs):
-        self.play_episodes(policy=self.policy)
+        score = self.play_episodes(policy=self.policy)
 
         polyak_average(self.q_net1, self.target_q_net1, tau=self.hparams.tau)
         polyak_average(self.q_net2, self.target_q_net2, tau=self.hparams.tau)
         polyak_average(self.policy, self.target_policy, tau=self.hparams.tau)
+        print("\tScore =", score, end = '')
 
         # self.log("episode/episode_return", self.env.return_queue[-1])

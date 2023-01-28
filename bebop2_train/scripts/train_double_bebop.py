@@ -368,7 +368,7 @@ if __name__ == "__main__":
     agent = PPOAgent(env_name)
 
     # A modifier vers le chemin du model entrainé. commenter pour repartir d'un nouveau model
-    agent.load_from_path("/home/huss/.ros/Models/18944", start_episode = 18944)
+    agent.load_from_path("/home/huss/.ros/Models/19500", start_episode = 19500)
     agent.run_batch() # train as PPO
 
     #agent.run_multiprocesses(num_worker = 16)  # train PPO multiprocessed (fastest)

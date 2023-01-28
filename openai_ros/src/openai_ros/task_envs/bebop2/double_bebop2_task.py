@@ -80,21 +80,28 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         self.reset_pub()
         rospy.sleep(0.1)
         self.gazebo.unpauseSim()
-        rospy.sleep(0.1)
-        self.takeoff()
 
-        # while True:
-        #     rospy.sleep(0.1)
-        #     self.takeoff()
-        #     dist_x = abs(self.L_odom.pose.pose.position.x - self.R_odom.pose.pose.position.x)
-        #     dist_y = abs(self.L_odom.pose.pose.position.y - self.R_odom.pose.pose.position.y)
-        #     dist_z = abs(self.L_odom.pose.pose.position.z - self.R_odom.pose.pose.position.z) 
+        # Boucle de sécurité pour éviter les cas foireux
+        while True:
+            rospy.sleep(0.1)
+            self.takeoff()
+            L_alt = self.L_odom.pose.pose.position.z
+            R_alt = self.R_odom.pose.pose.position.z
+            dist_x = abs(self.L_odom.pose.pose.position.x - self.R_odom.pose.pose.position.x)
+            dist_y = abs(self.L_odom.pose.pose.position.y - self.R_odom.pose.pose.position.y)
+            dist_z = abs(L_alt - R_alt) 
 
-        #     if self.compute_dist(dist_x, dist_y, dist_z) >1.02:
-        #         rospy.logerr("Problème detecté, reset : ", self.compute_dist(dist_x, dist_y, dist_z))
-        #         self._reset_sim()
-        #     else:
-        #         break
+            distance =  self.compute_dist(dist_x, dist_y, dist_z) 
+            if distance >1.02 or L_alt < 0.5 or R_alt < 0.5:
+
+                rospy.logerr(f"Problème detecté, reset : dist : {distance:.3f}, L_alt : {L_alt:.2f}, R_alt : {R_alt:.2f}")
+
+                self.gazebo.pauseSim()
+                self._reset_sim()
+                self.reset_pub()
+                self.gazebo.unpauseSim()
+            else:
+                break
 
         self.gazebo.pauseSim()
         self.number_step = 0

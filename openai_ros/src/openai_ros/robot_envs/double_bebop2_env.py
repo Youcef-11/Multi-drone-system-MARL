@@ -221,7 +221,8 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
             self.R_takeoff_pub.publish(Empty())
 
         # When it takes of value of height is around 1.3
-        self.wait_for_height(heigh_value_to_check=1, smaller_than=False, epsilon=0.05, update_rate=10, mode = mode)
+        rospy.sleep(1)
+        # self.wait_for_height(heigh_value_to_check=1, smaller_than=False, epsilon=0.05, update_rate=10, mode = mode)
 
     def reset_pub(self):
         # self.gazebo.unpauseSim()
