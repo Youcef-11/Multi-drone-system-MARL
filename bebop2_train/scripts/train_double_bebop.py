@@ -107,8 +107,8 @@ class PPOAgent:
         # Environment and PPO parameters
         self.env_name = env_name       
         self.env = gym.make(env_name)
-        self.action_size = 4 # Vx, Vy, Vz, Vyaw
-        self.state_size = (17,) # dist_x, dist_y, dist_z, L_speed_x, L_speed_y, L_speed_z, L_angular_z, 
+        self.action_size = 3 # Vx, Vy, Vz, Vyaw
+        self.state_size = (3,) # dist_x, dist_y, dist_z, L_speed_x, L_speed_y, L_speed_z, L_angular_z, 
                              # R_speed_x, R_speed_y, R_speed_z, R_angular_z, L_roll, L_pitch, L_yaw, R_roll, R_pitch, R_yaw
 
         self.EPISODES = 200000 # total episodes to train through all environments
@@ -308,7 +308,7 @@ class PPOAgent:
                 if done:
                     self.episode += 1
                     average, SAVING = self.PlotModel(score, self.episode)
-                    self.periodic_save(average)
+                    self.periodic_save(average, "Models/position")
                     
                     print("episode: {}/{}, score: {}, average: {:.2f}, step : {} {} : lr = {}".format(self.episode, self.EPISODES, score, average,t, SAVING, self.lr))
                     self.writer.add_scalar(f'Workers:{1}/score_per_episode', score, self.episode)
@@ -387,12 +387,11 @@ if __name__ == "__main__":
 
     # A modifier vers le chemin du model entrainé. commenter pour repartir d'un nouveau model
 
-    agent.load_from_path("/home/huss/.ros/Models/13000", start_episode = 13000)
+    # agent.load_from_path("/home/huss/.ros/Models/18500", start_episode = 18500)
     try:
         agent.run_batch() # train as PPO
     except (KeyboardInterrupt, rospy.ROSInterruptException):
         agent.force_save()
     
-
     #agent.run_multiprocesses(num_worker = 16)  # train PPO multiprocessed (fastest)
     # agent.test()

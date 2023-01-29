@@ -92,8 +92,8 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         action = [linear.x, linear.y, linear.z, angular.z]
         On fait bouger le R_bebop qui suit le L_bebop
         """
-        lin_x, lin_y, lin_z, ang_z = action
-        self.publish_cmd("R_bebop2",lin_x,lin_y,lin_z,ang_z)
+        lin_x, lin_y, lin_z = action
+        self.publish_cmd("R_bebop2",lin_x,lin_y,lin_z)
         self.number_step += 1
         
 
@@ -111,28 +111,8 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         dist_z = abs(self.L_odom.pose.pose.position.z - self.R_odom.pose.pose.position.z)
 
 
-        # Speed
-        L_speed_x = self.L_odom.twist.twist.linear.x
-        L_speed_y = self.L_odom.twist.twist.linear.y
-        L_speed_z = self.L_odom.twist.twist.linear.z
-        L_angular_z= self.L_odom.twist.twist.angular.x
 
-        R_speed_x = self.R_odom.twist.twist.linear.x
-        R_speed_y = self.R_odom.twist.twist.linear.y
-        R_speed_z = self.R_odom.twist.twist.linear.z
-        R_angular_z= self.R_odom.twist.twist.angular.x
-
-        # Orientation
-        L_roll, L_pitch, L_yaw = self.get_orientation_euler(self.L_odom.pose.pose.orientation)
-        R_roll, R_pitch, R_yaw = self.get_orientation_euler(self.R_odom.pose.pose.orientation)
-
-        # wrap angles between -PI and PI degrees
-        L_roll, L_pitch, L_yaw = self.wrap_angle(L_roll), self.wrap_angle(L_pitch), self.wrap_angle(L_yaw) 
-        R_roll, R_pitch, R_yaw = self.wrap_angle(R_roll), self.wrap_angle(R_pitch), self.wrap_angle(R_yaw)
-        
-
-
-        observation = np.array([dist_x, dist_y, dist_z, L_speed_x, L_speed_y, L_speed_z, L_angular_z, R_speed_x, R_speed_y, R_speed_z, R_angular_z, L_roll, L_pitch, L_yaw, R_roll, R_pitch, R_yaw])
+        observation = np.array([dist_x, dist_y, dist_z])
         return  observation
     
 
@@ -155,23 +135,24 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         done = False
 
         #Check if one of the two UAV is upside down
-        L_roll = observations[11]
-        L_pitch = observations[12]
+        # L_roll = observations[11]
+        # L_pitch = observations[12]
 
-        R_roll = observations[14]
-        R_pitch = observations[15]
-        L_yaw, R_yaw = observations[13], observations[16]
+        # R_roll = observations[14]
+        # R_pitch = observations[15]
+        # L_yaw, R_yaw = observations[13], observations[16]
         
-        yaw_error = abs(L_yaw-R_yaw)
+        # yaw_error = abs(L_yaw-R_yaw)
 
-        if abs(L_pitch) >= 1.57 or abs(L_roll) >= 1.57:
-            rospy.logdebug("Le L_bebop s'est retourné")
-            done = True
+        # if abs(L_pitch) >= 1.57 or abs(L_roll) >= 1.57:
+        #     rospy.logdebug("Le L_bebop s'est retourné")
+        #     done = True
 
-        if abs(R_pitch) >= 1.57 or abs(R_roll) >= 1.57:
-            rospy.logdebug("Le R_bebop s'est retourné")
-            done = True
+        # if abs(R_pitch) >= 1.57 or abs(R_roll) >= 1.57:
+        #     rospy.logdebug("Le R_bebop s'est retourné")
+        #     done = True
         
+
         # Check the distance between the drone
         dist_x, dist_y, dist_z = observations[0:3]
         # distance = self.compute_dist(dist_x, dist_y)

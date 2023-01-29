@@ -309,7 +309,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
 
 
-    def publish_cmd(self,name, lin_x,lin_y,lin_z, ang_z):
+    def publish_cmd(self,name, lin_x,lin_y,lin_z, ang_z  = 0):
         cmd = Twist()
         cmd.linear.x = lin_x
         cmd.linear.y = lin_y
@@ -332,7 +332,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
 
 
 
-    def do_hasardous_move(self, min_altitude = 0.5, stop_chance = 0.5):
+    def do_hasardous_move(self, min_altitude = 0.5, stop_chance = 0.2):
         """Avec stop_chance %  de chance, le leader s'arrête pendant 3s
         Sinon, il choisis une action au hasard en faisant attention a ne pas passer en dessous de l'altitude 'min_altitude'
         """
@@ -348,7 +348,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
             self.L_cmd_pub.publish(cmd)
 
         else: 
-            action = np.random.uniform(-1,1,4)
+            action = np.random.uniform(-1,1,3)
             cmd.linear.x = action[0]
             cmd.linear.y = action[1]
 
@@ -358,7 +358,7 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
             else:
                 cmd.linear.z = action[2]
 
-            cmd.angular.z = action[3]
+            # cmd.angular.z = action[3]
 
             self.L_cmd_pub.publish(cmd)
 
