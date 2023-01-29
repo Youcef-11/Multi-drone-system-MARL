@@ -92,7 +92,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
             dist_z = abs(L_alt - R_alt) 
 
             distance =  self.compute_dist(dist_x, dist_y, dist_z) 
-            if distance >1.02 or L_alt < 0.5 or R_alt < 0.5:
+            if distance >1.02 or L_alt < 0.25 or R_alt < 0.25:
 
                 rospy.logerr(f"Problème detecté, reset : dist : {distance:.3f}, L_alt : {L_alt:.2f}, R_alt : {R_alt:.2f}")
 
@@ -196,11 +196,14 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         
         # Check the distance between the drone
         dist_x, dist_y, dist_z = observations[0:3]
-        distance = self.compute_dist(dist_x, dist_y)
+        # distance = self.compute_dist(dist_x, dist_y)
 
-        if distance > 1.5 or distance < 0.5: done = True
+        # if distance > 1.5 or distance < 0.5: done = True
+        if dist_x > 0.2: done = True
+        if dist_y > 1.5: done = True
+        if dist_y < 0.5: done = True
         if dist_z > 0.2: done = True
-        if yaw_error > 0.53 : done = True # ~ 30 degrees 
+        # if yaw_error > 0.53 : done = True # ~ 30 degrees 
         if self.L_odom.pose.pose.position.z < 0.2 or self.R_odom.pose.pose.position.z < 0.2 : done = True
 
         return done
@@ -212,7 +215,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         On utilisera une reward linéiar en fonction de la distance entre les drones
         """
         # System rewards 1 2 ou 3 
-        reward = self.reward_system0(observations, done)
+        reward = self.reward_system0bis(observations, done)
         return reward
         
     # Internal TaskEnv Methods
@@ -244,20 +247,53 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
         if done : 
             if distance > 2: 
-                reward = -200
+                reward = rospy.get_param("overdist_reward",-350)
+            if distance < 0.6:
+                reward = rospy.get_param("near_distance_end", -350)
             elif dist_z > 0.2:
-                reward = -100
+                reward = rospy.get_param("overalt_reward",-100)
             
         if not done: 
             if (1 - distance)  > 0.15:
-                reward  = 15
-            else: 
-                reward = 1
+                reward  = rospy.get_param("good_reward", 15)
+            elif distance < 0.65: 
+                reward =  rospy.get_param("near_reward",-30)
             
+            # Encouraging number of step
             reward +=2
         
         return reward
         
+    def reward_system0bis(self, observations, done): 
+
+        dist_x, dist_y, dist_z = observations[0:3]
+        if done : 
+            if dist_x >=0.2:
+                reward = -200
+            
+            if dist_y >= 1.5:
+                reward = -300
+            elif dist_y <= 0.5:
+                reward = -300
+            
+            if dist_z >= 0.2:
+                reward = -300
+        
+        else:
+            reward = 0
+            if dist_x < 0.1:
+                reward  += 2
+
+            if abs(dist_y - 1) < 0.1:
+                reward += 4
+
+            if dist_z < 0.1:
+                reward += 2
+        
+        return reward
+
+
+
 
     def reward_system1(self, observations, done):
         L_roll = observations[11]
@@ -269,7 +305,7 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         dist_x, dist_y, dist_z = observations[0:3]
         distance = self.compute_dist(dist_x, dist_y)
         reward = 0
-        
+
         if not done: 
             if abs(1 - distance) < 0.1: 
                 reward += 10

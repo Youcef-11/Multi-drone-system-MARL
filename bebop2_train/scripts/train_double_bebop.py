@@ -133,7 +133,7 @@ class PPOAgent:
         
         self.Actor_name = f"{self.env_name}_PPO_Actor.h5"
         self.Critic_name = f"{self.env_name}_PPO_Critic.h5"
-        #self.load() # uncomment to continue training from old weights
+        # self.load() # uncomment to continue training from old weights
 
         # do not change bellow
         self.log_std = -0.5 * np.ones(self.action_size, dtype=np.float32)
@@ -314,6 +314,7 @@ class PPOAgent:
     def load_from_path(self, path, start_episode = None):
         self.Actor.Actor.load_weights(path + "/Actor.h5")
         self.Critic.Critic.load_weights(path + "/Critic.h5")
+        print(f"Loaded {path}")
         if start_episode is not None : 
             self.episode = start_episode
 
@@ -337,6 +338,10 @@ class PPOAgent:
             with open(f'{folder}/{self.episode}/data.txt', 'w') as f:
                 f.write(f"average : {average}")
 
+    def force_save(self, folder = "Models"):
+        self.Actor.Actor.save_weights(f"{folder}/Forced/Actor.h5")
+        self.Critic.Critic.save_weights(f"{folder}/Forced/Critic.h5")
+        print("file saved")
 
     def test(self, test_episodes = 100):#evaluate
         self.load()
@@ -369,8 +374,12 @@ if __name__ == "__main__":
 
     # A modifier vers le chemin du model entrainé. commenter pour repartir d'un nouveau model
 
-    # agent.load_from_path("/home/huss/.ros/Models/19500", start_episode = 19500)
-    agent.run_batch() # train as PPO
+    agent.load_from_path("/home/huss/.ros/Models/7500", start_episode = 7500)
+    try:
+        agent.run_batch() # train as PPO
+    except (KeyboardInterrupt, rospy.ROSInterruptException):
+        agent.force_save()
+    
 
     #agent.run_multiprocesses(num_worker = 16)  # train PPO multiprocessed (fastest)
     # agent.test()
