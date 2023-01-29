@@ -139,6 +139,19 @@ class PPOAgent:
         self.log_std = -0.5 * np.ones(self.action_size, dtype=np.float32)
         self.std = np.exp(self.log_std)
 
+        self.t = Thread(target= self.input_act)
+        self.t.start()
+
+    def input_act(self):
+        while True:
+            try:
+                choice = int(input("1 : changer le learning rate\n"))
+                if choice == 1:
+                    self.lr = float(input("Entrez une valeur numérique : "))
+                    print("learning rate changed : ", self.lr)
+            except (ValueError):
+                print("MAUVAIS CHOIX")
+
 
     def act(self, state):
         # Use the network to predict the next action to take, using the model
@@ -297,7 +310,7 @@ class PPOAgent:
                     average, SAVING = self.PlotModel(score, self.episode)
                     self.periodic_save(average)
                     
-                    print("episode: {}/{}, score: {}, average: {:.2f}, step : {} {}".format(self.episode, self.EPISODES, score, average,t, SAVING))
+                    print("episode: {}/{}, score: {}, average: {:.2f}, step : {} {} : lr = {}".format(self.episode, self.EPISODES, score, average,t, SAVING, self.lr))
                     self.writer.add_scalar(f'Workers:{1}/score_per_episode', score, self.episode)
                     self.writer.add_scalar(f'Workers:{1}/learning_rate', self.lr, self.episode)
                     self.writer.add_scalar(f'Workers:{1}/average_score',  average, self.episode)
@@ -374,7 +387,7 @@ if __name__ == "__main__":
 
     # A modifier vers le chemin du model entrainé. commenter pour repartir d'un nouveau model
 
-    agent.load_from_path("/home/huss/.ros/Models/7500", start_episode = 7500)
+    agent.load_from_path("/home/huss/.ros/Models/13000", start_episode = 13000)
     try:
         agent.run_batch() # train as PPO
     except (KeyboardInterrupt, rospy.ROSInterruptException):

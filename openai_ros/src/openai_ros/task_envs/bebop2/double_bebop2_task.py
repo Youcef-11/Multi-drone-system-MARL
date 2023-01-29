@@ -25,33 +25,11 @@ register(
 class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
     def __init__(self):
 
-        # On load les paramètres 
-        LoadYamlFileParamsTest(rospackage_name="openai_ros", rel_path_from_package_to_file="src/openai_ros/task_envs/bebop2/config", 
-                               yaml_file_name="bebop2.yaml")       
-
-        number_actions = rospy.get_param('/bebop2/n_actions')
-        self.action_space = spaces.Discrete(number_actions)
-        
-        #parrotdrone_goto utilisait une space bos, pas nous pour l'instant.
 
         # Lancement de la simulation
         ROSLauncher(rospackage_name="rotors_gazebo", launch_file_name="mav_train.launch", 
                     ros_ws_abspath=str(Path(__file__).parent.parent.parent.parent.parent.parent.parent))
         
-        # Paramètres
-        self.linear_forward_speed = rospy.get_param( '/bebop2/linear_forward_speed')
-        self.angular_turn_speed = rospy.get_param('/bebop2/angular_turn_speed')
-        self.angular_speed = rospy.get_param('/bebop2/angular_speed')
-
-        self.init_linear_speed_vector = Vector3()
-
-        self.init_linear_speed_vector.x = rospy.get_param( '/bebop2/init_linear_speed_vector/x')
-        self.init_linear_speed_vector.y = rospy.get_param( '/bebop2/init_linear_speed_vector/y')
-        self.init_linear_speed_vector.z = rospy.get_param( '/bebop2/init_linear_speed_vector/z')
-
-        self.init_angular_turn_speed = rospy.get_param( '/bebop2/init_angular_turn_speed')
-
-
         # On charge methodes et atributs de la classe mere
         super(DoubleBebop2TaskEnv, self).__init__()
 
