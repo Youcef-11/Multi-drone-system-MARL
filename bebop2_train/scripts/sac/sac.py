@@ -144,6 +144,7 @@ def sac(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=None, seed=0,
     # logger = logx.EpochLogger(**(logger_kwargs or {}))
     # logger.save_config(config)
     scores = []
+    orig_episod = episode
 
     random.seed(seed)
     tf.random.set_seed(seed)
@@ -169,31 +170,18 @@ def sac(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=None, seed=0,
     # Build an actor and critics.
     actor, critic = actor_critic(**ac_kwargs)
 
-    if load_path is None:
-        critic1 = critic
-        critic2 = tf.keras.models.clone_model(critic)
+    critic1 = critic
+    critic2 = tf.keras.models.clone_model(critic)
 
-        input_shape = [(None, obs_dim), (None, act_dim)]
+    input_shape = [(None, obs_dim), (None, act_dim)]
 
-        critic1.build(input_shape)  # Initialize weights.
-        target_critic1 = tf.keras.models.clone_model(critic)
-        target_critic1.set_weights(critic1.get_weights())
+    critic1.build(input_shape)  # Initialize weights.
+    target_critic1 = tf.keras.models.clone_model(critic)
+    target_critic1.set_weights(critic1.get_weights())
 
-        critic2.build(input_shape)  # Initialize weights.
-        target_critic2 = tf.keras.models.clone_model(critic)
-        target_critic2.set_weights(critic2.get_weights())
-    else:
-        actor.load_weights(load_path, "actor.h5")
-        critic.load_weights(load_path, "critic.h5")
-        critic1.load_weights(load_path, "critic1.h5")
-        critic2.load_weights(load_path, "critic2.h5")
-        target_critic1.load_weights(load_path, "target_critic1.h5")
-        target_critic2.load_weights(load_path, "target_critic2.h5")
-
-    critic_variables = critic1.trainable_variables + critic2.trainable_variables
-
-    optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
-
+    critic2.build(input_shape)  # Initialize weights.
+    target_critic2 = tf.keras.models.clone_model(critic)
+    target_critic2.set_weights(critic2.get_weights())
 
     @tf.function
     def get_action(o, deterministic=tf.constant(False)):
@@ -202,6 +190,22 @@ def sac(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=None, seed=0,
             return mu[0]
         else:
             return pi[0]
+
+
+    if load_path:
+        # get action only to build up the actor neurons
+        get_action(env.observation_space.sample())
+
+        actor.load_weights(load_path + "/actor.h5")
+        critic.load_weights(load_path + "/critic.h5")
+        critic1.load_weights(load_path + "/critic1.h5")
+        critic2.load_weights(load_path + "/critic2.h5")
+        target_critic1.load_weights(load_path + "/target_critic1.h5")
+        target_critic2.load_weights(load_path + "/target_critic2.h5")
+
+    critic_variables = critic1.trainable_variables + critic2.trainable_variables
+
+    optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
 
     @tf.function
     def learn_on_batch(obs1, obs2, acts, rews, done):
@@ -261,15 +265,17 @@ def sac(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=None, seed=0,
                     q2=q2,
                     logp_pi=logp_pi)
 
-    # def test_agent():
-    #     for _ in range(num_test_episodes):
-    #         o, d, ep_ret, ep_len = test_env.reset(), False, 0, 0
-    #         while not (d or (ep_len == max_ep_len)):
-    #             # Take deterministic actions at test time.
-    #             o, r, d, _ = test_env.step(
-    #                 get_action(tf.convert_to_tensor(o), tf.constant(True)))
-    #             ep_ret += r
-    #             ep_len += 1
+    def test_agent():
+        print("================TESTING=================")
+        for _ in range(num_test_episodes):
+            o, d, ep_ret, ep_len = env.reset(), False, 0, 0
+            while not (d or (ep_len == max_ep_len)):
+                # Take deterministic actions at test time.
+                o, r, d, _ = env.step(
+                    get_action(tf.convert_to_tensor(o), tf.constant(True)))
+                ep_ret += r
+                ep_len += 1
+            print(f"Score : {ep_ret}, step : {ep_len}")
             # logger.store(TestEpRet=ep_ret, TestEpLen=ep_len)
 
     start_time = time.time()
@@ -314,13 +320,14 @@ def sac(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=None, seed=0,
             episode += 1
 
 
-        if episode % 1000 == 0 and episode != 0: 
+        if episode % 1000 == 0 and episode != orig_episod: 
             actor_tuple = ("actor", actor)
             critic_tuple = ("critic", critic)
             critic1_tuple = ("critic1", critic1)
             critic2_tuple = ("critic2", critic2)
             tg1_tuple   = ("target_critic1", target_critic1)
             tg2_tuple   = ("target_critic2", target_critic2)
+            test_agent()
 
             save(f"Models_sac/{episode}", actor_tuple, critic_tuple, critic1_tuple, critic2_tuple, tg1_tuple, tg2_tuple)
 

@@ -12,7 +12,7 @@ def make_env():
 
 rospy.init_node("train_double_bebop_sac")
 
-sac.sac(make_env)
+sac.sac(make_env, load_path='/home/huss/.ros/Models_sac/4000', episode= 4000)
 
 
 
