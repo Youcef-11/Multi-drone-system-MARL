@@ -60,12 +60,12 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
 
         self.reset_pub()
-        rospy.sleep(0.04)
+        rospy.sleep(0.1)
         self.gazebo.unpauseSim()
 
         # Boucle de sécurité pour éviter les cas foireux
         while True:
-            rospy.sleep(0.04)
+            rospy.sleep(0.1)
             self.takeoff()
             L_alt = self.L_odom.pose.pose.position.z
             R_alt = self.R_odom.pose.pose.position.z
