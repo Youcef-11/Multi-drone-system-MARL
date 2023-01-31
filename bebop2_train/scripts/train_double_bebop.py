@@ -39,9 +39,9 @@ class Actor_Model:
         X_input = Input(input_shape)
         self.action_space = action_space
         
-        X = Dense(512, activation="relu", kernel_initializer=tf.random_normal_initializer(stddev=0.01))(X_input)
-        X = Dense(256, activation="relu", kernel_initializer=tf.random_normal_initializer(stddev=0.01))(X)
+        X = Dense(128, activation="relu", kernel_initializer=tf.random_normal_initializer(stddev=0.01))(X_input)
         X = Dense(64, activation="relu", kernel_initializer=tf.random_normal_initializer(stddev=0.01))(X)
+        X = Dense(32, activation="relu", kernel_initializer=tf.random_normal_initializer(stddev=0.01))(X)
         output = Dense(self.action_space, activation="tanh")(X)
 
         self.Actor = Model(inputs = X_input, outputs = output)
@@ -76,9 +76,9 @@ class Critic_Model:
         X_input = Input(input_shape)
         old_values = Input(shape=(1,))
 
-        V = Dense(512, activation="relu", kernel_initializer=tf.random_normal_initializer(stddev=0.01))(X_input)
-        V = Dense(256, activation="relu", kernel_initializer=tf.random_normal_initializer(stddev=0.01))(V)
+        V = Dense(128, activation="relu", kernel_initializer=tf.random_normal_initializer(stddev=0.01))(X_input)
         V = Dense(64, activation="relu", kernel_initializer=tf.random_normal_initializer(stddev=0.01))(V)
+        V = Dense(32, activation="relu", kernel_initializer=tf.random_normal_initializer(stddev=0.01))(V)
         value = Dense(1, activation=None)(V)
 
         self.Critic = Model(inputs=[X_input, old_values], outputs = value)
@@ -308,7 +308,7 @@ class PPOAgent:
                 if done:
                     self.episode += 1
                     average, SAVING = self.PlotModel(score, self.episode)
-                    self.periodic_save(average, "Models/position")
+                    self.periodic_save(average, "Models/lowNN")
                     
                     print("episode: {}/{}, score: {}, average: {:.2f}, step : {} {} : lr = {}".format(self.episode, self.EPISODES, score, average,t, SAVING, self.lr))
                     self.writer.add_scalar(f'Workers:{1}/score_per_episode', score, self.episode)

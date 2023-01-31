@@ -1,0 +1,4 @@
+<launch>
+  <node name="SAC_training" pkg="bebop2_train" type="SAC_training.py" output="screen">
+  </node>
+</launch>

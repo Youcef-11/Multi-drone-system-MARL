@@ -260,7 +260,6 @@ class DoubleBebop2Env(robot_gazebo_env.RobotGazeboEnv):
         Checks if current height is smaller or bigger than a value
         :param: smaller_than: If True, we will wait until value is smaller than the one given
         """
-        #TODO: Régler le bug a cause duquel les deux drones ne takeoff pas a la meme hauteur.
 
         assert mode in ("L", "R", "both")
 

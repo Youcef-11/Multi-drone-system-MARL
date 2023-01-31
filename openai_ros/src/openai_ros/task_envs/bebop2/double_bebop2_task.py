@@ -33,6 +33,10 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
         # On charge methodes et atributs de la classe mere
         super(DoubleBebop2TaskEnv, self).__init__()
 
+        self.observation_space = spaces.Box(low = np.array([-30,-30,-30]), high = np.array([30,30,30]), dtype = np.float32)
+        self.action_space = spaces.Box(low = np.array([-1,-1,-1]), high = np.array([1,1,1]), dtype = np.float32)
+
+
 
     def _set_init_pose(self):
         """Sets the Robot in its init pose
@@ -56,12 +60,12 @@ class DoubleBebop2TaskEnv(double_bebop2_env.DoubleBebop2Env):
 
 
         self.reset_pub()
-        rospy.sleep(0.1)
+        rospy.sleep(0.04)
         self.gazebo.unpauseSim()
 
         # Boucle de sécurité pour éviter les cas foireux
         while True:
-            rospy.sleep(0.1)
+            rospy.sleep(0.04)
             self.takeoff()
             L_alt = self.L_odom.pose.pose.position.z
             R_alt = self.R_odom.pose.pose.position.z
