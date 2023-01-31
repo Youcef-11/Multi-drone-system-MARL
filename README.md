@@ -8,7 +8,10 @@
 
 
 
-Références :
+## Références :
+
 Openai_ros : http://wiki.ros.org/openai_ros
+
 Iros drone : https://github.com/arnaldojr/iROS_drone/tree/noetic
+
 Rotors_simulator : https://github.com/ethz-asl/rotors_simulator
