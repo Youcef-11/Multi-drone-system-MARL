@@ -36,7 +36,7 @@ class teleop:
 
         self.twist = Twist()
         self.accelerate_mode = False
-        self.speed_tab = [0.2, 0.5, 0.8]
+        self.speed_tab = [0.05, 0.1, 0.2]
 
         # speed choice (indice in the speed_tab)
         self.sc = 0
@@ -61,13 +61,12 @@ class teleop:
             self.sc = (self.sc + 1) %3 
             print(f"{self.namespace} : Speed changed to {self.speed_tab[self.sc]}")
 
-        if self.test_action(key, "takeoff/land"):
-            if self.has_takeoff:
-                self.land_pub.publish(Empty()) 
-            else:
+        if self.test_action(key, "takeoff"):
                 self.takeoff_pub.publish(Empty()) 
 
-            self.has_takeoff = not self.has_takeoff
+        if self.test_action(key, "land"):
+                self.land_pub.publish(Empty()) 
+
 
         if not self.accelerate_mode:
             self.do_action(key)
@@ -178,27 +177,47 @@ L_keybinds = {
     "right" : '6',
     "rotate_right" :'3',
     "rotate_left" : '1',
-    "takeoff/land" : Key.enter,
+    "takeoff" : '+',
+    "land" : Key.enter, 
     "stop" : '0',
     "mode" : Key.f1,
-    "change_speed" : Key.ctrl_r
+    "change_speed" : 'z'
 
 }
+ R_keybinds = {
+     "up" : '7',
+     "down" : '9',
+     "forward" : '8',
+     "backward" : '2',
+     "left" : '4',
+     "right" : '6',
+     "rotate_right" :'3',
+     "rotate_left" : '1',
+     "takeoff" : '+',
+     "land" : Key.enter, 
+     "stop" : '0',
+     "mode" : Key.f1,
+     "change_speed" : 'a'
 
-R_keybinds = {
-    "up" : 'a',
-    "down" : 'e',
-    "forward" : 'z',
-    "backward" : 's',
-    "left" : 'q',
-    "right" : 'd',
-    "rotate_right" :'c',
-    "rotate_left" : 'w',
-    "takeoff/land" : Key.space,
-    "stop" : 'x',
-    "mode" : Key.f2,
-    "change_speed" : Key.ctrl_l
-}
+ }
+
+
+
+#R_keybinds = {
+#   "up" : 'a',
+#   "down" : 'e',
+#   "forward" : 'z',
+#   "backward" : 's',
+#   "left" : 'q',
+#   "right" : 'd',
+#   "rotate_right" :'c',
+#   "rotate_left" : 'w',
+#   "takeoff" : Key.space,
+#   "land" : 'f',
+#   "stop" : 'x',
+#   "mode" : Key.f2,
+#   "change_speed" : Key.ctrl_l
+#}
 
 Left = teleop("L_bebop2", L_keybinds)
 Right = teleop("R_bebop2", R_keybinds)

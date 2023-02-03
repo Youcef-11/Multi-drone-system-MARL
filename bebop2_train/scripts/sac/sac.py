@@ -202,6 +202,7 @@ def sac(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=None, seed=0,
         critic2.load_weights(load_path + "/critic2.h5")
         target_critic1.load_weights(load_path + "/target_critic1.h5")
         target_critic2.load_weights(load_path + "/target_critic2.h5")
+        print("WEIHGTS LOADED")
 
     critic_variables = critic1.trainable_variables + critic2.trainable_variables
 
@@ -315,12 +316,12 @@ def sac(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=None, seed=0,
             # logger.store(EpRet=ep_ret, EpLen=ep_len)
             scores.append(ep_ret)
             average = sum(scores[-50:])/len(scores[-50:])
-            print(f"epsiode : {episode} : score = {ep_ret}, step = {ep_len}, average = {average:.2f}")
+            print(f"epsiode : {episode} : score = {ep_ret}, step = {ep_len}, average = {average:.2f}, random action : {t<= start_steps}")
             o, ep_ret, ep_len = env.reset(), 0, 0
             episode += 1
 
 
-        if episode % 1000 == 0 and episode != orig_episod: 
+        if episode % 500 == 0 and episode != orig_episod: 
             actor_tuple = ("actor", actor)
             critic_tuple = ("critic", critic)
             critic1_tuple = ("critic1", critic1)
@@ -329,7 +330,7 @@ def sac(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=None, seed=0,
             tg2_tuple   = ("target_critic2", target_critic2)
             test_agent()
 
-            save(f"Models_sac/{episode}", actor_tuple, critic_tuple, critic1_tuple, critic2_tuple, tg1_tuple, tg2_tuple)
+            save(scores, f"Models_sac/{episode}", actor_tuple, critic_tuple, critic1_tuple, critic2_tuple, tg1_tuple, tg2_tuple)
 
 
         # Update handling.
@@ -376,10 +377,12 @@ def sac(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=None, seed=0,
                 tf.keras.models.save_model(actor, save_path)
 
 # def save(actor, critic, critic1, critic2, target_critic1, target_critic2):
-def save(folder = "Models_sac", *models):
+def save(scores,folder = "Models_sac", *models):
     path  = f"/home/huss/.ros/{folder}"
     if not os.path.isdir(path):
         os.mkdir(path)
+    
+    np.save(path + '/score.npy', scores)
 
     for m in models:
         try:

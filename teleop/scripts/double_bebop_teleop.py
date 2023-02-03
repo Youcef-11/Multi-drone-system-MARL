@@ -132,8 +132,8 @@ class teleop:
         # self.twist.linear.z = np.clip(self.twist.linear.z, -1, 1)
         # self.twist.angular.z = np.clip(self.twist.angular.z, -1, 1)
 
-        self.L_cmd_pub.publish(self.twist)
         self.R_cmd_pub.publish(self.twist)
+        self.L_cmd_pub.publish(self.twist)
 
 
 
