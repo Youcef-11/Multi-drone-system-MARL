@@ -1,12 +1,38 @@
 # Synchronization-of-a-multi-drone-system-with-reinforcement-learning-MARL
 
-# TODO
+## Introduction
 
-## Sim to reality
-- Quand on passera a la réalité, ne pas oublier de définir la pose de chaque drone en fonction de la réalité 
-- Tester avec le teleop la vitesse maximal du drone en cmd_vel, qui devrait etre comrpise entre [-1 1] normalement.
+La synchronisation de drones pour former une flotte est un enjeu majeur dans plusieurs
+domaines. On y trouve plusieurs applications civiles ou militaires. Notre projet s’inscrit dans
+cette thématique en nous limitant à la synchronisation de deux drones.
 
+## Contenu
 
+Cette branch contient deux algorithme d'entrainement ainsi que la simulation qui va avec :
+
+### Le PPO (proximal policy optimization) : 
+L'entrainemnet par PPO peut etre lancé avec la commande (sans oublier de sourcer le workspace ros)
+```bash
+roslaunch bebop2_train bebop2_double_train.launch
+```
+### Le SAC (soft actor critic)
+```bash
+roslaunch bebop2_train SAC_train.launch
+```
+
+Le package contient également un teleop qui peremt de controler autant réel que simulé.
+Vous pouvez lancer la simulation avec : 
+
+```bash
+roslaunch rotors_gazebo mav_2_bebop.launch
+```
+Pour lancer la simulation avec 2 drones
+ou 
+
+```bash
+roslaunch rotors_gazebo mav_1_bebop.launch
+```
+pour un seul drones
 
 ## Références :
 
