@@ -1,46 +1,62 @@
-# Synchronization-of-a-multi-drone-system-with-reinforcement-learning-MARL
+# Synchronization of a Multi-Drone System with Reinforcement Learning (MARL)
 
 ## Introduction
 
-La synchronisation de drones pour former une flotte est un enjeu majeur dans plusieurs
-domaines. On y trouve plusieurs applications civiles ou militaires. Notre projet s’inscrit dans
-cette thématique en nous limitant à la synchronisation de deux drones.
+Synchronizing drones to form a fleet is a critical challenge in various domains, including both civilian and military applications. Our project falls within this thematic scope, with a focus on the synchronization of two drones.
 
-## Contenu
+## Content
 
-Cette branch contient deux algorithme d'entrainement ainsi que la simulation qui va avec :
+This branch contains two training algorithms and the associated simulation:
 
-### Le PPO (proximal policy optimization) : 
-L'entrainemnet par PPO peut etre lancé avec la commande (sans oublier de sourcer le workspace ros)
-```bash
-roslaunch bebop2_train bebop2_double_train.launch
-```
-### Le SAC (soft actor critic)
-```bash
-roslaunch bebop2_train SAC_train.launch
-```
+1. **Proximal Policy Optimization (PPO)**:
+   - Launch PPO training using the following command (don't forget to source the ROS workspace):
 
-Le package contient également un teleop qui peremt de controler autant réel que simulé.
-Vous pouvez lancer la simulation avec : 
+     ```bash
+     roslaunch bebop2_train bebop2_double_train.launch
+     ```
 
-```bash
-roslaunch rotors_gazebo mav_2_bebop.launch
-```
-Pour lancer la simulation avec 2 drones
-ou 
+2. **Soft Actor Critic (SAC)**:
+   - Start SAC training with the following command:
 
-```bash
-roslaunch rotors_gazebo mav_1_bebop.launch
-```
-pour un seul drones
+     ```bash
+     roslaunch bebop2_train SAC_train.launch
+     ```
 
-## Références :
+The package also includes a teleoperation module that allows control in both real and simulated environments. You can initiate the simulation with:
 
-Openai_ros : http://wiki.ros.org/openai_ros
+- For a simulation with 2 drones:
 
-Iros drone : https://github.com/arnaldojr/iROS_drone/tree/noetic
+     ```bash
+     roslaunch rotors_gazebo mav_2_bebop.launch
+     ```
 
-Rotors_simulator : https://github.com/ethz-asl/rotors_simulator
+- For a simulation with a single drone:
+
+     ```bash
+     roslaunch rotors_gazebo mav_1_bebop.launch
+     ```
+
+## Installation
+
+To run this project, you will need to have the following installed:
+
+- [ROS (Robot Operating System)](http://wiki.ros.org/ROS/Installation)
+- [OpenAI ROS](http://wiki.ros.org/openai_ros)
+- [iROS Drone](https://github.com/arnaldojr/iROS_drone/tree/noetic)
+- [Rotors Simulator](https://github.com/ethz-asl/rotors_simulator)
+
+Ensure that you have properly configured your ROS environment and sourced the ROS workspace before running the provided commands.
+
+## References
+
+- [OpenAI ROS](http://wiki.ros.org/openai_ros)
+- [iROS Drone](https://github.com/arnaldojr/iROS_drone/tree/noetic)
+- [Rotors Simulator](https://github.com/ethz-asl/rotors_simulator)
+- [SAC Algorithm](https://spinningup.openai.com/en/latest/algorithms/sac.html#)
+- [PPO Algorithm](https://pylessons.com/BipedalWalker-v3-PPO)
+
+Feel free to explore the provided algorithms, simulations, and references to further understand and contribute to the synchronization of multi-drone systems using reinforcement learning.
+
 
 SAC Algorithm  : https://spinningup.openai.com/en/latest/algorithms/sac.html#
 
